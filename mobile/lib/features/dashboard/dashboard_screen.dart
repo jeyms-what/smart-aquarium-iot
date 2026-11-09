@@ -213,18 +213,22 @@ class _MeasurementCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final valid = reading?.hasUsableValue ?? false;
-    final displayedUnit = valid ? reading!.displayUnit : unit;
-    final age = reading == null ? null : _age(reading.measuredAt);
-    final status = reading == null
+
+    // Capture the nullable field in a local variable so Dart can promote it
+    // after the null check. Public properties aren't promotable across reads.
+    final currentReading = reading;
+    final valid = currentReading?.hasUsableValue ?? false;
+    final displayedUnit = valid ? currentReading!.displayUnit : unit;
+    final age = currentReading == null ? null : _age(currentReading.measuredAt);
+    final status = currentReading == null
         ? 'No reading $unit'
         : !valid
             ? 'Invalid or unavailable reading'
-            : reading.timeQuality == 'uptime_only'
+            : currentReading.timeQuality == 'uptime_only'
                 ? 'Device wall-clock time is unverified'
                 : age == 'device time ahead'
                     ? 'Device timestamp is ahead of phone time'
-                    : reading.isStale()
+                    : currentReading.isStale()
                         ? 'STALE · $age old'
                         : 'Measured $age ago';
 
@@ -241,7 +245,7 @@ class _MeasurementCard extends StatelessWidget {
               Text(title, style: Theme.of(context).textTheme.titleSmall),
               const SizedBox(height: 5),
               Text(
-                valid ? reading!.formattedValue : '—',
+                valid ? currentReading!.formattedValue : '—',
                 style: const TextStyle(fontSize: 27, fontWeight: FontWeight.w700),
               ),
               Text(displayedUnit, style: Theme.of(context).textTheme.bodySmall),
@@ -249,7 +253,7 @@ class _MeasurementCard extends StatelessWidget {
               Text(
                 status,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: reading?.isStale() == true ? colors.error : colors.onSurfaceVariant,
+                      color: currentReading?.isStale() == true ? colors.error : colors.onSurfaceVariant,
                     ),
               ),
             ],
