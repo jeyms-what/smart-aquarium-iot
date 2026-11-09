@@ -1,0 +1,12 @@
+# Development ACL. Production must provision a distinct username per device.
+user aquarium_backend
+topic readwrite aquarium/#
+
+user aquarium_001
+topic write aquarium/aquarium_001/telemetry
+topic write aquarium/aquarium_001/state
+topic write aquarium/aquarium_001/alerts
+topic write aquarium/aquarium_001/network
+topic write aquarium/aquarium_001/availability
+topic write aquarium/aquarium_001/cmd/ack
+topic read aquarium/aquarium_001/cmd/request

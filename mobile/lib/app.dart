@@ -1,0 +1,110 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+
+import 'data/repositories/aquarium_repository.dart';
+import 'features/control/control_screen.dart';
+import 'features/dashboard/dashboard_screen.dart';
+import 'features/history/history_screen.dart';
+import 'features/monitoring/monitoring_controller.dart';
+import 'features/settings/settings_screen.dart';
+import 'theme/app_theme.dart';
+
+class SmartAquariumApp extends StatefulWidget {
+  const SmartAquariumApp({super.key, this.repository});
+
+  /// Null is used by widget previews/tests. The production entry point injects
+  /// the SQLite-backed repository from main.dart.
+  final AquariumRepository? repository;
+
+  @override
+  State<SmartAquariumApp> createState() => _SmartAquariumAppState();
+}
+
+class _SmartAquariumAppState extends State<SmartAquariumApp> {
+  ThemeMode _themeMode = ThemeMode.dark;
+  late final MonitoringController _monitoringController;
+
+  @override
+  void initState() {
+    super.initState();
+    _monitoringController = MonitoringController(repository: widget.repository);
+    unawaited(_monitoringController.initialize());
+  }
+
+  void _toggleTheme() {
+    setState(() {
+      _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    });
+  }
+
+  @override
+  void dispose() {
+    _monitoringController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Smart Aquarium',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: _themeMode,
+      home: AquariumShell(
+        controller: _monitoringController,
+        onToggleTheme: _toggleTheme,
+        isDarkMode: _themeMode == ThemeMode.dark,
+      ),
+    );
+  }
+}
+
+class AquariumShell extends StatefulWidget {
+  const AquariumShell({
+    required this.controller,
+    required this.onToggleTheme,
+    required this.isDarkMode,
+    super.key,
+  });
+
+  final MonitoringController controller;
+  final VoidCallback onToggleTheme;
+  final bool isDarkMode;
+
+  @override
+  State<AquariumShell> createState() => _AquariumShellState();
+}
+
+class _AquariumShellState extends State<AquariumShell> {
+  int _selectedIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final pages = <Widget>[
+      DashboardScreen(
+        controller: widget.controller,
+        onToggleTheme: widget.onToggleTheme,
+        isDarkMode: widget.isDarkMode,
+      ),
+      const ControlScreen(),
+      HistoryScreen(controller: widget.controller),
+      const SettingsScreen(),
+    ];
+
+    return Scaffold(
+      body: SafeArea(child: IndexedStack(index: _selectedIndex, children: pages)),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: (index) => setState(() => _selectedIndex = index),
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.dashboard_outlined), selectedIcon: Icon(Icons.dashboard), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.tune), label: 'Control'),
+          NavigationDestination(icon: Icon(Icons.show_chart), label: 'History'),
+          NavigationDestination(icon: Icon(Icons.settings_outlined), label: 'Settings'),
+        ],
+      ),
+    );
+  }
+}

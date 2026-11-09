@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "Dart-Code.flutter",
+    "Dart-Code.dart-code",
+    "espressif.esp-idf-extension",
+    "ms-vscode.vscode-json"
+  ]
+}

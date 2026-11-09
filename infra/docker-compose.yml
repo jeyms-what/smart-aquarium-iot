@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: smart-aquarium-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: smart_aquarium_dev
+      POSTGRES_USER: aquarium_app
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local_dev_change_me_only}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - aquarium_pg_data:/var/lib/postgresql/data
+      - ../backend/migrations/001_init.sql:/docker-entrypoint-initdb.d/001_init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aquarium_app -d smart_aquarium_dev"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: smart-aquarium-mosquitto
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:1883:1883"
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./mosquitto/aclfile:/mosquitto/config/aclfile:ro
+      - ./mosquitto/passwordfile:/mosquitto/config/passwordfile:ro
+      - aquarium_mosquitto_data:/mosquitto/data
+
+volumes:
+  aquarium_pg_data:
+  aquarium_mosquitto_data:
