@@ -1,4 +1,4 @@
-# Smart Aquarium IoT — Solo Developer Starter
+# Smart Aquarium IoT
 
 **Project version:** 0.3.0  
 **Target:** Demonstrable integrated MVP by 1 December 2026  
@@ -8,9 +8,7 @@ This repository is the working Smart Aquarium capstone baseline. Version 0.3.0 a
 
 ## 1. Responsibilities
 
-- **You — sole software developer:** Flutter/Dart, Node.js, MQTT, PostgreSQL, ESP-IDF, FCM/SMS, AI rules, integration, and releases.
-- **Member 2 — hardware support:** verify exact parts and datasheets, assemble low-voltage hardware, check electrical interfaces and power, provide measured component details, and run hardware checks under your instructions.
-- **Member 3 — QA/documentation support:** execute test cases, collect evidence, reproduce defects, maintain wiring/test documentation, and track requirements. They do not independently change application source code.
+- **You — sole software developer:** Flutter/Dart, Node.js, MQTT, PostgreSQL, ESP-IDF, FCM/SMS, AI rules, integration, execute test cases, collect evidence, reproduce defects, maintain wiring/test documentation, and track requirements and releases. 
 
 ## 2. Version 0.3.0 implementation
 
