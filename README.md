@@ -1,122 +1,503 @@
 # Smart Aquarium IoT
 
-**Project version:** 0.3.0  
-**Target:** Demonstrable integrated MVP by 1 December 2026  
-**Development model:** One software developer; two supporting members for hardware and QA/documentation.
+[![Smart Aquarium CI](https://github.com/jeyms-what/smart-aquarium-iot/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/jeyms-what/smart-aquarium-iot/actions/workflows/ci.yml)
 
-This repository is the working Smart Aquarium capstone baseline. Version 0.3.0 adds the mobile telemetry data layer: SQLite persistence, a read-only API client for the existing latest-telemetry endpoint, cached/offline presentation, measurement freshness labels, and a local history view. It is not a completed or hardware-verified system.
+An IoT aquarium monitoring and control capstone project built around an ESP32, a Flutter Android application, a Node.js API, MQTT, and PostgreSQL.
 
-## 1. Responsibilities
+> **Project status: In development.** The current `main` branch is a software baseline, not a finished or hardware-verified aquarium system. The target is a demonstrable integrated MVP by **1 December 2026**.
 
-- **You — sole software developer:** Flutter/Dart, Node.js, MQTT, PostgreSQL, ESP-IDF, FCM/SMS, AI rules, integration, execute test cases, collect evidence, reproduce defects, maintain wiring/test documentation, and track requirements and releases. 
+## Table of contents
 
-## 2. Version 0.3.0 implementation
+- [Project overview](#project-overview)
+- [Current implementation status](#current-implementation-status)
+- [System architecture](#system-architecture)
+- [Repository structure](#repository-structure)
+- [Technology stack](#technology-stack)
+- [Development prerequisites](#development-prerequisites)
+- [Clone the repository](#clone-the-repository)
+- [Run the Flutter application](#run-the-flutter-application)
+- [Run the local backend and infrastructure](#run-the-local-backend-and-infrastructure)
+- [Connect the Android app to the local backend](#connect-the-android-app-to-the-local-backend)
+- [Build the ESP32 firmware](#build-the-esp32-firmware)
+- [Testing and continuous integration](#testing-and-continuous-integration)
+- [Team collaboration workflow](#team-collaboration-workflow)
+- [Security and hardware safety](#security-and-hardware-safety)
+- [Documentation](#documentation)
+- [Roadmap](#roadmap)
 
-### Mobile app
+## Project overview
 
-- SQLite database file `smart_aquarium.db` stores actual telemetry records and the last successful synchronization timestamp.
-- A read-only HTTP API client requests `GET /api/v1/devices/{deviceId}/telemetry/latest`.
-- The dashboard labels data source as backend, cached, offline, or not configured.
-- Each measurement shows its recorded age. Readings older than two minutes are labelled stale; this is a display threshold, not a water-quality safety threshold.
-- The history page reads locally persisted records.
-- Controls remain locked until authentication, command acknowledgments, local safety checks, and physical state feedback are implemented.
+The project is intended to monitor aquarium conditions, provide useful care information, and support safe equipment control.
 
-### Backend
+Planned hardware includes:
 
-The latest telemetry response now includes `event_id` and `device_id`, which the mobile SQLite store needs for idempotent local persistence.
+- Water-temperature sensor.
+- Water-level sensor.
+- Turbidity sensor.
+- Automatic feeder.
+- Water pump and its driver circuit.
+- ESP32 controller.
+- Optional LTE modem for cellular data and direct SMS notifications.
 
-## 3. Install mobile dependencies
+The software is divided into a Flutter mobile app, a Node.js backend, ESP32 firmware, local infrastructure, and shared documentation.
 
-Use the Flutter/Dart installation already verified on your Windows PC. Your reported Dart version is 3.13.7; `sqflite 2.4.5` requires Dart 3.12 or newer.
+The system must distinguish actual readings from missing, invalid, stale, cached, or test data. It must never claim that an actuator operated merely because a command was sent.
 
-In VS Code PowerShell:
+## Current implementation status
+
+The following describes the code currently merged into `main`.
+
+| Area | Current state |
+|---|---|
+| Flutter application shell | Implemented: dashboard, control, history, and settings sections |
+| Dashboard | Displays explicit not-configured, backend, cached, and offline states |
+| Telemetry model | Implemented: measurement value, unit, validity, timestamps, event/device IDs, sequence, and time quality |
+| Local mobile storage | SQLite telemetry cache and synchronization timestamp storage implemented |
+| Backend telemetry API client | Read-only latest-telemetry retrieval implemented |
+| History | Reads locally stored telemetry records |
+| Node.js API | Express server, health endpoint, bearer-token middleware, telemetry endpoint, and command API foundation |
+| MQTT | Backend subscriptions, telemetry validation/ingestion, event handling, command publishing, and command acknowledgments |
+| PostgreSQL | Initial schema for devices, telemetry samples, device events, and commands |
+| ESP32 firmware | Bootstrap only; initializes NVS and reports that hardware integration is pending |
+| Physical sensors and actuators | Not integrated or verified |
+| Mobile pump/feeder control | Kept locked in `main` until firmware execution and physical feedback are ready |
+| LTE, FCM, and direct SMS | Not integrated |
+| Offline event queue and bidirectional synchronization | Not complete |
+| Species-specific recommendations | Not implemented |
+| Production authentication and public deployment | Not implemented |
+
+**Important:** A successful backend health check means the backend can reach its configured database and MQTT broker. It does not prove that an ESP32 is online. Likewise, an MQTT publish is not proof of physical pump or feeder operation.
+
+## System architecture
+
+The intended end-to-end data path is:
+
+```text
+Aquarium sensors
+      |
+      v
+    ESP32  <----> Local safety logic and event storage
+      |
+      | Wi-Fi primary / LTE fallback (planned)
+      v
+   MQTT broker
+      |
+      v
+ Node.js backend
+      |
+      +----> PostgreSQL
+      |
+      +----> REST API
+                |
+                v
+         Flutter Android app
+                |
+                v
+          Local SQLite cache
+```
+
+The ESP32 must remain responsible for time-critical sensing and local safety behavior. The phone and remote backend must not be the only safety controller.
+
+See [docs/architecture.md](docs/architecture.md) and [docs/mqtt-contract.md](docs/mqtt-contract.md) for the architecture and draft message contract.
+
+## Repository structure
+
+```text
+smart-aquarium-iot/
+├── .github/
+│   └── workflows/
+│       └── ci.yml                 # Flutter and backend CI
+├── backend/
+│   ├── migrations/                # PostgreSQL schema
+│   ├── src/                       # Express API, MQTT, DB, auth, validation
+│   ├── test/                      # Node.js tests
+│   ├── .env.example               # Safe configuration template
+│   └── package.json
+├── docs/
+│   ├── architecture.md
+│   ├── acceptance-tests.md
+│   ├── development-plan.md
+│   ├── development-status.md
+│   ├── mobile-data-layer.md
+│   ├── mqtt-contract.md
+│   ├── team-responsibilities.md
+│   └── templates/
+├── firmware/
+│   ├── main/
+│   │   └── main.c                 # Safe ESP-IDF bootstrap
+│   └── README.md
+├── infra/
+│   ├── docker-compose.yml         # Local PostgreSQL and Mosquitto
+│   └── mosquitto/                 # Local broker config and ACL
+├── mobile/
+│   ├── android/                   # Android platform project
+│   ├── lib/
+│   │   ├── core/
+│   │   ├── data/
+│   │   ├── features/
+│   │   └── theme/
+│   ├── test/
+│   └── pubspec.yaml
+├── scripts/
+│   ├── setup-local-mqtt.ps1
+│   ├── start-local-stack.ps1
+│   └── stop-local-stack.ps1
+├── CHANGELOG.md
+├── README.md
+└── .gitignore
+```
+
+## Technology stack
+
+| Component | Technology |
+|---|---|
+| Mobile application | Flutter and Dart |
+| Android development | Android SDK, ADB, Android Emulator or physical Android phone |
+| Backend API | Node.js 22+ and Express |
+| Request validation | Zod |
+| Device messaging | MQTT with Mosquitto |
+| Server database | PostgreSQL |
+| Mobile local database | SQLite through `sqflite` |
+| Embedded firmware | ESP-IDF and FreeRTOS |
+| Local development infrastructure | Docker Compose |
+| Source control and CI | Git, GitHub, GitHub Actions |
+
+## Development prerequisites
+
+Install the following tools on your development computer:
+
+1. **Git** — for cloning, branching, committing, and pulling changes.
+2. **Visual Studio Code** — the primary editor for this project.
+3. **Flutter SDK (stable channel)** — the CI workflow currently uses Flutter 3.47.9. The app's Dart SDK constraint is `>=3.12.0 <4.0.0`.
+4. **Android SDK and Platform Tools** — for building and deploying the Android app.
+5. **Android Studio (optional UI requirement)** — install it if you want to manage Android Virtual Devices; VS Code remains the primary IDE.
+6. **Node.js 22 or newer** — required by the backend.
+7. **Docker Desktop with Docker Compose** — required for the local PostgreSQL and Mosquitto services.
+8. **ESP-IDF** — required to build and flash the ESP32 firmware after the exact board model has been confirmed.
+
+Verify the Flutter and Android environment:
+
+```powershell
+flutter doctor -v
+flutter --version
+adb version
+```
+
+Verify Node.js and Docker:
+
+```powershell
+node --version
+npm --version
+docker --version
+docker compose version
+```
+
+## Clone the repository
+
+Open PowerShell or the VS Code terminal:
+
+```powershell
+git clone https://github.com/jeyms-what/smart-aquarium-iot.git
+cd smart-aquarium-iot
+code .
+```
+
+To update an existing checkout:
+
+```powershell
+git switch main
+git pull origin main
+```
+
+Before switching branches, commit or safely back up any uncommitted work.
+
+## Run the Flutter application
+
+The Android platform directory is already included in this repository.
 
 ```powershell
 cd mobile
 flutter pub get
 flutter analyze
+flutter test
 ```
 
-The application uses the `sqflite` plugin on Android/iOS and the `path` package to build the database path. The widget tests use the no-repository preview mode and do not open the native SQLite plugin. The archive intentionally does not contain a generated Android Gradle project; run `flutter create --platforms=android .` first so Flutter creates the platform files for your installed SDK.
+Connect a physical Android phone with USB debugging enabled, or start an Android Virtual Device.
 
-## 4. Run without a backend first
-
-Once an Android phone appears in `flutter devices`:
+Check available targets:
 
 ```powershell
-cd mobile
+flutter emulators
+flutter devices
+```
+
+Run the app:
+
+```powershell
 flutter run
 ```
 
-Without API configuration, the app must display an explicit not-configured state and no fabricated sensor readings. The local SQLite database is still initialized.
+When both an emulator and a physical phone are connected, select the intended device from the VS Code device selector or use:
 
-## 5. Connect to the local backend from a physical Android phone
+```powershell
+flutter run -d YOUR_DEVICE_ID
+```
 
-The starter backend binds to `127.0.0.1` and should remain local-only. For a USB-connected Android phone, use ADB reverse rather than opening the API to the LAN:
+The app can be opened without a configured backend. In that state it should show that the API is not configured and should not invent sensor measurements.
+
+## Run the local backend and infrastructure
+
+The local development stack consists of PostgreSQL and Mosquitto. Docker Desktop must be running.
+
+### 1. Create local MQTT credentials
+
+From the repository root, run:
+
+```powershell
+.\scripts\setup-local-mqtt.ps1
+```
+
+The script creates local MQTT accounts for the backend and the development device `aquarium_001`. Record the backend password temporarily; it must be entered in `backend/.env`.
+
+The generated password file is ignored by Git and must not be committed.
+
+### 2. Create the backend environment file
+
+Copy the example:
+
+```powershell
+Copy-Item backend/.env.example backend/.env
+```
+
+Edit `backend/.env` and replace the placeholders:
+
+- `MQTT_PASSWORD`: password created for the `aquarium_backend` MQTT account.
+- `API_BEARER_TOKEN`: a random token of at least 32 characters.
+
+Generate a local development API token with Node.js:
+
+```powershell
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+The example database URL and Docker Compose defaults are for local development only. Keep the database and broker bound to localhost. If you change the PostgreSQL password, update the Compose configuration and `DATABASE_URL` consistently.
+
+### 3. Start PostgreSQL and Mosquitto
+
+```powershell
+.\scripts\start-local-stack.ps1
+```
+
+Check the containers:
+
+```powershell
+docker ps
+```
+
+On a fresh PostgreSQL volume, the initial schema is loaded from `backend/migrations/001_init.sql`. The backend also provides a migration command for an existing local database:
+
+```powershell
+cd backend
+npm install
+npm run db:migrate
+```
+
+### 4. Test and start the backend
+
+From the `backend` folder:
+
+```powershell
+npm install
+npm test
+npm run dev
+```
+
+The API listens on `127.0.0.1:8080` by default. In another terminal, check the health endpoint:
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8080/health
+```
+
+The health endpoint reports database and MQTT connectivity. A healthy response does not confirm that the physical ESP32 is connected.
+
+To stop the local containers later:
+
+```powershell
+.\scripts\stop-local-stack.ps1
+```
+
+## Connect the Android app to the local backend
+
+The local development token is accepted only by debug builds and is not suitable for public or production deployment.
+
+### Physical Android phone over USB
+
+With USB debugging authorized, run:
 
 ```powershell
 adb reverse tcp:8080 tcp:8080
 ```
 
-For local development only, add a temporary backend `.env` file from `.env.example`, set a random `API_BEARER_TOKEN` of at least 32 characters, and start the backend. Do not commit `.env`.
-
-Run the debug app with these build-time values:
+Then, from the `mobile` directory, launch the app with local development values:
 
 ```powershell
 flutter run `
   --dart-define=AQUARIUM_API_BASE_URL=http://127.0.0.1:8080 `
-  --dart-define=AQUARIUM_API_DEV_TOKEN=PASTE_YOUR_LOCAL_DEV_TOKEN `
+  --dart-define=AQUARIUM_API_DEV_TOKEN=YOUR_LOCAL_DEV_TOKEN `
   --dart-define=AQUARIUM_DEVICE_ID=aquarium_001
 ```
 
-Replace the token placeholder locally. Do not paste your token into chat, screenshots, GitHub, or documentation.
+### Android Emulator
 
-After `flutter create --platforms=android .`, run these commands from the repository root:
+For the standard Android Emulator, use `10.0.2.2` to reach the development computer:
 
 ```powershell
-New-Item -ItemType Directory -Force mobile/android/app/src/debug | Out-Null
-Copy-Item docs/templates/android-debug-AndroidManifest.xml mobile/android/app/src/debug/AndroidManifest.xml
+flutter run `
+  --dart-define=AQUARIUM_API_BASE_URL=http://10.0.2.2:8080 `
+  --dart-define=AQUARIUM_API_DEV_TOKEN=YOUR_LOCAL_DEV_TOKEN `
+  --dart-define=AQUARIUM_DEVICE_ID=aquarium_001
 ```
 
-This debug-only Android manifest permits HTTP to localhost for the ADB-reverse workflow. Release builds do not receive this override. The development bearer token is compiled into the debug app, so it must never be used in a release APK or on an internet-exposed server. A proper user login/session-token system with per-aquarium authorization is required before remote/public deployment.
+Replace the token placeholder locally. Never paste the token into GitHub, chat, screenshots, issue reports, or documentation.
 
-A successful API call proves the backend endpoint was reachable. It does not prove the ESP32 is online. The dashboard therefore says “Backend reachable” rather than “Device connected.”
+The Android debug manifest permits cleartext HTTP for this localhost development workflow. Do not copy that permission into a release manifest or expose this development API to the internet.
 
-## 6. Testing
+## Build the ESP32 firmware
+
+The current firmware is a safe ESP-IDF bootstrap. It initializes non-volatile storage (NVS) and logs that hardware integration is pending. It does **not** yet read sensors, connect Wi-Fi/MQTT, control a pump or feeder, or operate an LTE modem.
+
+Before building or flashing:
+
+1. Confirm the exact ESP32 board model and revision.
+2. Check the board's official schematic and datasheet.
+3. Confirm the target chip family and select the matching ESP-IDF target.
+4. Confirm the actual COM port and use a data-capable USB cable.
+
+Open the ESP-IDF terminal, navigate to `firmware/`, then select the target that matches the confirmed board. For example, use `esp32s3` **only if the physical board is an ESP32-S3**:
 
 ```powershell
-cd mobile
-flutter analyze
+idf.py set-target esp32s3
+idf.py build
+```
+
+Flash only after confirming the target and serial port:
+
+```powershell
+idf.py -p COMx flash monitor
+```
+
+See [firmware/README.md](firmware/README.md) for hardware integration precautions.
+
+## Testing and continuous integration
+
+GitHub Actions runs the following checks for pull requests and configured development-branch pushes:
+
+**Flutter** (from `mobile/`):
+
+```powershell
+flutter pub get
+flutter analyze --fatal-infos
 flutter test
 ```
 
-The repository includes tests for valid telemetry parsing, invalid/null sensor values, required fields, and initial empty states. The earlier `flutter test` attempt on your PC was blocked by Windows Application Control when Windows tried to execute `flutter_tester.exe`. That is an operating-system policy issue, not a failed test assertion. Do not disable Windows security. Ask your administrator/IT support to review the matching Code Integrity or AppLocker event, or continue with Android builds while that is investigated.
+**Backend** (from `backend/`):
 
-Manual Android verification:
+```powershell
+npm install
+npm test
+```
 
-1. Launch the application with no API values; confirm the not-configured state.
-2. Configure local API values; confirm the app reaches `/health`-independent telemetry endpoint only when refreshed.
-3. With no telemetry stored on the backend, confirm no measurements are displayed.
-4. Publish one test telemetry record through the backend only after clearly labelling it as test data; verify it appears and is cached.
-5. Disable backend connectivity and refresh; confirm the last stored measurement remains labelled cached and its original measurement time is preserved.
-6. Open History; confirm stored records are shown from SQLite.
+Run these checks locally before submitting a pull request. The CI workflow is defined in [.github/workflows/ci.yml](.github/workflows/ci.yml).
 
-Never use artificial test values as actual aquarium readings or present them as physical prototype evidence.
+If Windows Application Control blocks Flutter's `flutter_tester.exe`, inspect the related Code Integrity or AppLocker event with your administrator or IT support. Do not disable Windows security controls just to run tests. GitHub Actions provides a separate CI test environment.
 
-## 7. API response contract
+Manual integration testing is still required. A passing unit test or CI run does not prove that the app works with the real ESP32, sensors, pump, feeder, LTE modem, or phone notifications.
 
-The latest endpoint must return `event_id`, `device_id`, `sensor_code`, `measurement_value`, `measurement_unit`, `is_valid`, `measured_at`, `received_at`, `time_quality`, and `sequence_number` for each sensor record. The application rejects malformed records rather than silently inventing defaults.
+## Team collaboration workflow
 
-## 8. Still unimplemented
+The project has one software developer responsible for source-code implementation and integration. Other team members support hardware verification, test execution, evidence collection, and documentation.
 
-- ESP32 sensor drivers and physical telemetry publication.
-- Device heartbeat and definitive online/offline state.
-- Command execution and physical feedback.
-- User authentication suitable for release/public remote access.
-- FCM and direct SMS.
-- Wi-Fi/LTE failover and modem integration.
-- Full offline event queue and bidirectional synchronization.
-- Species profiles and offline recommendation rules.
-- CSV export, analytics, and production hardening.
+### Clone and update
 
-See `docs/development-status.md`, `docs/development-plan.md`, and `docs/mqtt-contract.md` for the project baseline and next milestones.
+Each collaborator can clone the public repository:
+
+```powershell
+git clone https://github.com/jeyms-what/smart-aquarium-iot.git
+cd smart-aquarium-iot
+```
+
+Before starting assigned work:
+
+```powershell
+git switch main
+git pull origin main
+```
+
+### Use a feature or documentation branch
+
+Do not commit directly to `main`.
+
+```powershell
+git switch -c docs/update-hardware-record
+```
+
+After making assigned changes:
+
+```powershell
+git status
+git add .
+git commit -m "docs: update hardware verification record"
+git push -u origin docs/update-hardware-record
+```
+
+Open a pull request on GitHub with `main` as the base branch. Include a summary, evidence, test results, and known limitations. Review the diff and CI results before merging.
+
+### Suggested team responsibilities
+
+| Member | Responsibility |
+|---|---|
+| You — software developer | Own Flutter, backend, MQTT, PostgreSQL, ESP-IDF source, software integration, and releases |
+| Member 2 — hardware support | Inventory exact parts, provide datasheets, verify power and wiring, assemble the prototype, and bench-test sensors/actuators |
+| Member 3 — QA and documentation | Execute test cases, reproduce defects, capture evidence, maintain acceptance records, and prepare user/project documentation |
+
+Collaborators should use Issues to report defects and attach reproducible steps, logs, and evidence. Source-code changes should be coordinated with the software owner to avoid conflicting implementations.
+
+## Security and hardware safety
+
+- This repository is public. Never commit `.env`, API tokens, passwords, Wi-Fi credentials, private keys, certificates, or generated MQTT password files.
+- If a credential is accidentally published, revoke or rotate it immediately. Removing it from the latest commit does not make an exposed credential safe again.
+- The current bearer-token setup is for local development only. Do not use it for a public deployment or release APK.
+- Do not expose the development API or MQTT broker directly to the public internet.
+- Use TLS and unique device credentials before production deployment.
+- Do not energize a pump, motor, feeder, or relay until its voltage/current ratings, driver circuit, isolation, protection, wiring, and safe boot behavior have been verified.
+- Do not power an LTE modem from the ESP32 3.3 V pin unless the exact module's power requirements and supply design explicitly support it.
+- Do not treat raw turbidity ADC values as NTU without a documented calibration method.
+- Do not represent test fixtures or simulated values as actual aquarium measurements.
+- A command published to MQTT is not confirmed actuation. The device must acknowledge it, and physical state should only be marked verified when actual feedback supports that result.
+
+## Documentation
+
+| Document | Purpose |
+|---|---|
+| [Architecture](docs/architecture.md) | System boundaries, components, and engineering rules |
+| [Development plan](docs/development-plan.md) | Milestones, dates, work ownership, and acceptance gates |
+| [Development status](docs/development-status.md) | Implemented, pending, and not-yet-verified work |
+| [MQTT and API contract](docs/mqtt-contract.md) | Topic names, payloads, and endpoint expectations |
+| [Mobile data layer](docs/mobile-data-layer.md) | Flutter repository, API, and SQLite design |
+| [Acceptance tests](docs/acceptance-tests.md) | Test procedures and evidence requirements |
+| [Team responsibilities](docs/team-responsibilities.md) | Team roles and collaboration expectations |
+| [Changelog](CHANGELOG.md) | Version history |
+
+## Roadmap
+
+The planned implementation sequence is:
+
+1. Verify all development toolchains and local infrastructure.
+2. Integrate one real sensor from ESP32 through MQTT, backend, PostgreSQL, API, and Flutter.
+3. Add safe actuator control with command expiry, device acknowledgment, and physical feedback.
+4. Add resilient local event storage and synchronization after connectivity returns.
+5. Add explainable offline recommendations using validated readings and a configured fish/species profile.
+6. Integrate FCM, direct SMS, LTE data, and Wi-Fi/LTE failover after the exact modem and network requirements are confirmed.
+7. Complete hardware/software integration testing, documentation, and demonstration preparation.
+
+A feature is complete only after the relevant code, tests, target-device or hardware verification, and evidence are available. See [docs/development-plan.md](docs/development-plan.md) for the detailed schedule and acceptance gates.
