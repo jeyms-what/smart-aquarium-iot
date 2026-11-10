@@ -8,18 +8,10 @@ class AquariumRepository {
     required TelemetryStore localStore,
     required TelemetryApiClient apiClient,
   }) {
-    return AquariumRepository._(
-      deviceId: deviceId,
-      _localStore: localStore,
-      _apiClient: apiClient,
-    );
+    return AquariumRepository._(deviceId, localStore, apiClient);
   }
 
-  AquariumRepository._({
-    required this.deviceId,
-    required this._localStore,
-    required this._apiClient,
-  });
+  AquariumRepository._(this.deviceId, this._localStore, this._apiClient);
 
   final String deviceId;
   final TelemetryStore _localStore;
