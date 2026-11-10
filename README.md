@@ -452,16 +452,6 @@ git push -u origin docs/update-hardware-record
 
 Open a pull request on GitHub with `main` as the base branch. Include a summary, evidence, test results, and known limitations. Review the diff and CI results before merging.
 
-### Suggested team responsibilities
-
-| Member | Responsibility |
-|---|---|
-| You — software developer | Own Flutter, backend, MQTT, PostgreSQL, ESP-IDF source, software integration, and releases |
-| Member 2 — hardware support | Inventory exact parts, provide datasheets, verify power and wiring, assemble the prototype, and bench-test sensors/actuators |
-| Member 3 — QA and documentation | Execute test cases, reproduce defects, capture evidence, maintain acceptance records, and prepare user/project documentation |
-
-Collaborators should use Issues to report defects and attach reproducible steps, logs, and evidence. Source-code changes should be coordinated with the software owner to avoid conflicting implementations.
-
 ## Security and hardware safety
 
 - This repository is public. Never commit `.env`, API tokens, passwords, Wi-Fi credentials, private keys, certificates, or generated MQTT password files.
