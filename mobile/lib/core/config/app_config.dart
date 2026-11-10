@@ -22,10 +22,20 @@ class AppConfig {
     defaultValue: 'aquarium_001',
   );
 
+  /// Must remain false until the firmware command handler, expiry checks,
+  /// safe boot states, and physical actuator feedback have been verified.
+  static const bool deviceCommandsEnabled = bool.fromEnvironment(
+    'AQUARIUM_ENABLE_DEVICE_COMMANDS',
+    defaultValue: false,
+  );
+
   static bool get remoteApiEnabled =>
       kDebugMode &&
       apiBaseUrl.trim().isNotEmpty &&
       developmentBearerToken.trim().length >= 32;
+
+  static bool get remoteCommandControlEnabled =>
+      remoteApiEnabled && deviceCommandsEnabled;
 
   static String get apiConfigurationLabel {
     if (!kDebugMode) {
