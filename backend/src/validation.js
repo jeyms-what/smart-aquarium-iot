@@ -19,7 +19,11 @@ export const telemetrySchema = z.object({
   sequence: z.number().int().nonnegative(),
   measured_at: z.iso.datetime({ offset: true }),
   time_quality: z.enum(['ntp_synced', 'rtc_synced', 'rtc_estimated', 'uptime_only']),
-  readings: z.record(z.string().regex(/^[a-z][a-z0-9_]{0,47}$/), readingSchema).min(1),
+  readings: z
+    .record(z.string().regex(/^[a-z][a-z0-9_]{0,47}$/), readingSchema)
+    .refine((readings) => Object.keys(readings).length > 0, {
+      message: 'At least one sensor reading is required.',
+    }),
 });
 
 export const alertSchema = z.object({

@@ -16,6 +16,11 @@ test('accepts a schema-valid telemetry event', () => {
   assert.equal(telemetrySchema.safeParse(validTelemetry).success, true);
 });
 
+test('rejects a telemetry event without sensor readings', () => {
+  const payload = { ...validTelemetry, readings: {} };
+  assert.equal(telemetrySchema.safeParse(payload).success, false);
+});
+
 test('rejects a reading marked valid when value is null', () => {
   const payload = structuredClone(validTelemetry);
   payload.readings.water_temperature = { value: null, unit: 'degC', valid: true };

@@ -36,7 +36,10 @@ class MonitoringSnapshot {
 }
 
 class MonitoringController extends ChangeNotifier {
-  MonitoringController({AquariumRepository? repository}) : _repository = repository;
+  factory MonitoringController({AquariumRepository? repository}) =>
+      MonitoringController._(repository);
+
+  MonitoringController._(this._repository);
 
   final AquariumRepository? _repository;
   MonitoringSnapshot _snapshot = const MonitoringSnapshot();
