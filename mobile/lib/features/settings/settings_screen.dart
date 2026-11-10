@@ -22,9 +22,9 @@ class SettingsScreen extends StatelessWidget {
             title: const Text('Development API'),
             subtitle: Text(AppConfig.apiConfigurationLabel),
           ),
-          ListTile(
-            leading: const Icon(Icons.fingerprint),
-            title: const Text('Device identifier'),
+          const ListTile(
+            leading: Icon(Icons.fingerprint),
+            title: Text('Device identifier'),
             subtitle: Text(AppConfig.deviceId),
           ),
           const Divider(height: 1),

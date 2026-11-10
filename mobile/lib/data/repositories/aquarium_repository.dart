@@ -3,12 +3,15 @@ import '../models/telemetry_reading.dart';
 import '../remote/telemetry_api_client.dart';
 
 class AquariumRepository {
-  AquariumRepository({
-    required this.deviceId,
+  factory AquariumRepository({
+    required String deviceId,
     required TelemetryStore localStore,
     required TelemetryApiClient apiClient,
-  })  : _localStore = localStore,
-        _apiClient = apiClient;
+  }) {
+    return AquariumRepository._(deviceId, localStore, apiClient);
+  }
+
+  AquariumRepository._(this.deviceId, this._localStore, this._apiClient);
 
   final String deviceId;
   final TelemetryStore _localStore;

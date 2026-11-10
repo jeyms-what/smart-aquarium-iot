@@ -9,6 +9,14 @@ void main() {
 
     expect(find.text('Remote API not configured'), findsOneWidget);
     expect(find.text('No reading °C'), findsOneWidget);
+
+    // The dashboard is a lazy sliver list, so scroll to build the recommendation
+    // panel before asserting its empty state.
+    await tester.scrollUntilVisible(
+      find.text('No recommendation available'),
+      250,
+      maxScrolls: 10,
+    );
     expect(find.text('No recommendation available'), findsOneWidget);
   });
 
