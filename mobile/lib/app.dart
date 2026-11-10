@@ -88,7 +88,7 @@ class _AquariumShellState extends State<AquariumShell> {
         onToggleTheme: widget.onToggleTheme,
         isDarkMode: widget.isDarkMode,
       ),
-      const ControlScreen(),
+      ControlScreen(repository: widget.controller.repository),
       HistoryScreen(controller: widget.controller),
       const SettingsScreen(),
     ];
