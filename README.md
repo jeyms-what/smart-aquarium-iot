@@ -15,6 +15,7 @@ An IoT aquarium monitoring and control capstone project built around an ESP32, a
 - [Technology stack](#technology-stack)
 - [Development prerequisites](#development-prerequisites)
 - [Clone the repository](#clone-the-repository)
+- [Open the Flutter app in Android Studio](#open-the-flutter-app-in-android-studio)
 - [Run the Flutter application](#run-the-flutter-application)
 - [Run the local backend and infrastructure](#run-the-local-backend-and-infrastructure)
 - [Connect the Android app to the local backend](#connect-the-android-app-to-the-local-backend)
@@ -152,6 +153,7 @@ smart-aquarium-iot/
 | Component | Technology |
 |---|---|
 | Mobile application | Flutter and Dart |
+| Primary IDE | Android Studio with the Flutter and Dart plugins |
 | Android development | Android SDK, ADB, Android Emulator or physical Android phone |
 | Backend API | Node.js 22+ and Express |
 | Request validation | Zod |
@@ -167,10 +169,10 @@ smart-aquarium-iot/
 Install the following tools on your development computer:
 
 1. **Git** — for cloning, branching, committing, and pulling changes.
-2. **Visual Studio Code** — the primary editor for this project.
-3. **Flutter SDK (stable channel)** — the CI workflow currently uses Flutter 3.47.9. The app's Dart SDK constraint is `>=3.12.0 <4.0.0`.
-4. **Android SDK and Platform Tools** — for building and deploying the Android app.
-5. **Android Studio (optional UI requirement)** — install it if you want to manage Android Virtual Devices; VS Code remains the primary IDE.
+2. **Android Studio (stable release)** — the primary IDE for the Flutter Android application and Android Virtual Device management.
+3. **Flutter SDK (stable channel)** — required separately from the Android Studio plugins. The CI workflow currently uses Flutter 3.47.9. The app's Dart SDK constraint is `>=3.12.0 <4.0.0`.
+4. **Flutter and Dart plugins for Android Studio** — install the Flutter plugin from the IDE Marketplace; approve the Dart plugin when prompted.
+5. **Android SDK and Platform Tools** — for building and deploying the Android app. Keep the installed SDK version compatible with the Flutter SDK.
 6. **Node.js 22 or newer** — required by the backend.
 7. **Docker Desktop with Docker Compose** — required for the local PostgreSQL and Mosquitto services.
 8. **ESP-IDF** — required to build and flash the ESP32 firmware after the exact board model has been confirmed.
@@ -194,12 +196,11 @@ docker compose version
 
 ## Clone the repository
 
-Open PowerShell or the VS Code terminal:
+Open PowerShell or the Android Studio terminal:
 
 ```powershell
 git clone https://github.com/jeyms-what/smart-aquarium-iot.git
 cd smart-aquarium-iot
-code .
 ```
 
 To update an existing checkout:
@@ -211,18 +212,33 @@ git pull origin main
 
 Before switching branches, commit or safely back up any uncommitted work.
 
+## Open the Flutter app in Android Studio
+
+This repository already contains a Flutter project and its Android platform folder at `mobile/android`. **Do not create a new Android/Kotlin project and do not replace the existing `mobile` folder.** To use Android Studio as the primary IDE:
+
+1. Install and launch the stable Android Studio release.
+2. Open **File > Settings > Plugins > Marketplace**, search for **Flutter**, and install it. Accept the prompt to install the **Dart** plugin, then restart Android Studio.
+3. Confirm that the Flutter SDK is installed separately. In Android Studio, open **File > Settings > Languages & Frameworks > Flutter** and set the Flutter SDK path to the existing SDK directory. The Flutter plugin alone is not the Flutter SDK.
+4. From the Android Studio Welcome screen, choose **Open**. Browse to the cloned repository and select the **`mobile`** folder—the folder that contains `pubspec.yaml`—then open it. Do not choose **New > Project from Existing Sources**.
+5. Wait for Android Studio to finish indexing, then use the Flutter Pub get action or the embedded Terminal to run `flutter pub get` from `mobile/`.
+6. Open **Tools > Device Manager** to create or start an Android Virtual Device, or connect a physical Android phone with USB debugging enabled.
+7. Select the target device in the Android Studio device selector and click **Run**. You can also run Flutter commands in the embedded Terminal.
+
+The `mobile` folder is the Flutter app root. The sibling `backend`, `firmware`, `infra`, `docs`, and `scripts` folders remain part of the same Git repository. Use the Android Studio Terminal to access them with relative paths, or open the repository root in a separate window when you need to browse the full repository.
+
+Official setup reference: [Flutter development in Android Studio](https://docs.flutter.dev/tools/android-studio).
+
 ## Run the Flutter application
 
-The Android platform directory is already included in this repository.
+The Android platform directory is already included in this repository. Open the `mobile` folder in Android Studio as described above, then run these commands in its embedded Terminal:
 
 ```powershell
-cd mobile
 flutter pub get
 flutter analyze
 flutter test
 ```
 
-Connect a physical Android phone with USB debugging enabled, or start an Android Virtual Device.
+Connect a physical Android phone with USB debugging enabled, or start an Android Virtual Device from **Tools > Device Manager**.
 
 Check available targets:
 
@@ -231,13 +247,13 @@ flutter emulators
 flutter devices
 ```
 
-Run the app:
+Run the app from Android Studio's **Run** action or from the embedded Terminal:
 
 ```powershell
 flutter run
 ```
 
-When both an emulator and a physical phone are connected, select the intended device from the VS Code device selector or use:
+When both an emulator and a physical phone are connected, select the intended device in Android Studio's device selector or use:
 
 ```powershell
 flutter run -d YOUR_DEVICE_ID
