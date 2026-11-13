@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../widgets/glass_panel.dart';
-
 import '../../data/models/telemetry_reading.dart';
+import '../../widgets/glass_panel.dart';
 import '../monitoring/monitoring_controller.dart';
 
 class HistoryScreen extends StatefulWidget {
@@ -102,7 +101,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               return GlassPanel(padding: EdgeInsets.zero, child: Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: colors.surfaceContainerLow,
+                  color: colors.surfaceContainerLow.withValues(alpha: 0.48),
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(color: colors.outlineVariant.withValues(alpha: 0.5)),
                 ),
@@ -124,7 +123,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     Text(value, textAlign: TextAlign.end, style: const TextStyle(fontWeight: FontWeight.w700)),
                   ],
                 ),
-              ));;
+              ));
             },
           );
         },
