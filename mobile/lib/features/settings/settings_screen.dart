@@ -1,52 +1,107 @@
 import 'package:flutter/material.dart';
 
 import '../../core/config/app_config.dart';
+import '../../widgets/glass_panel.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(title: const Text('Settings'), titleSpacing: 20),
       body: ListView(
+        padding: const EdgeInsets.fromLTRB(18, 10, 18, 28),
         children: [
-          const ListTile(
-            leading: Icon(Icons.devices_other),
-            title: Text('Aquarium device'),
-            subtitle: Text('Device connection is not confirmed until device heartbeat support is integrated.'),
+          Text('DEVICE & CONNECTION', style: TextStyle(color: colors.primary, fontSize: 10, letterSpacing: 1.7, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 12),
+          const _SettingsTile(
+            icon: Icons.devices_other_rounded,
+            title: 'Aquarium device',
+            subtitle: 'Device connection is not confirmed until heartbeat support is integrated.',
           ),
-          const Divider(height: 1),
-          ListTile(
-            leading: const Icon(Icons.cloud_outlined),
-            title: const Text('Development API'),
-            subtitle: Text(AppConfig.apiConfigurationLabel),
+          const SizedBox(height: 9),
+          _SettingsTile(
+            icon: Icons.cloud_outlined,
+            title: 'Development API',
+            subtitle: AppConfig.apiConfigurationLabel,
           ),
-          const ListTile(
-            leading: Icon(Icons.fingerprint),
-            title: Text('Device identifier'),
-            subtitle: Text(AppConfig.deviceId),
+          const SizedBox(height: 9),
+          const _SettingsTile(
+            icon: Icons.fingerprint_rounded,
+            title: 'Device identifier',
+            subtitle: AppConfig.deviceId,
           ),
-          const Divider(height: 1),
-          const ListTile(
-            leading: Icon(Icons.storage_outlined),
-            title: Text('Local database'),
-            subtitle: Text('SQLite stores received telemetry and synchronization timestamps on this device.'),
+          const SizedBox(height: 24),
+          Text('STORAGE & SECURITY', style: TextStyle(color: colors.primary, fontSize: 10, letterSpacing: 1.7, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 12),
+          const _SettingsTile(
+            icon: Icons.storage_rounded,
+            title: 'Local database',
+            subtitle: 'SQLite stores received telemetry and synchronization timestamps on this device.',
           ),
-          const Divider(height: 1),
-          const ListTile(
-            leading: Icon(Icons.security_outlined),
-            title: Text('Development security'),
-            subtitle: Text('The temporary bearer token is debug-only. Do not put a development token in a release APK or expose the local backend to the internet.'),
+          const SizedBox(height: 9),
+          const _SettingsTile(
+            icon: Icons.security_rounded,
+            title: 'Development security',
+            subtitle: 'The temporary bearer token is debug-only. Never include it in a release APK or expose the local backend to the internet.',
           ),
-          const Divider(height: 1),
-          const ListTile(
-            leading: Icon(Icons.info_outline),
-            title: Text('Application version'),
-            subtitle: Text('0.3.0 — telemetry cache and read-only API integration'),
+          const SizedBox(height: 24),
+          Text('ABOUT', style: TextStyle(color: colors.primary, fontSize: 10, letterSpacing: 1.7, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 12),
+          const _SettingsTile(
+            icon: Icons.info_outline_rounded,
+            title: 'Application version',
+            subtitle: '0.3.0 — telemetry cache and read-only API integration',
           ),
+          const SizedBox(height: 18),
+          Center(child: Text('AQUASENSE  •  SMART AQUARIUM', style: TextStyle(color: colors.onSurfaceVariant, fontSize: 9, letterSpacing: 1.5, fontWeight: FontWeight.w700))),
         ],
       ),
     );
+  }
+}
+
+class _SettingsTile extends StatelessWidget {
+  const _SettingsTile({required this.icon, required this.title, required this.subtitle});
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return GlassPanel(padding: EdgeInsets.zero, child: Container(
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: colors.surfaceContainerLow.withValues(alpha: 0.48),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: colors.outlineVariant.withValues(alpha: 0.5)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 39,
+            height: 39,
+            decoration: BoxDecoration(color: colors.primary.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(13)),
+            child: Icon(icon, color: colors.primary, size: 20),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13)),
+                const SizedBox(height: 4),
+                Text(subtitle, style: TextStyle(color: colors.onSurfaceVariant, fontSize: 11, height: 1.4)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ));
   }
 }

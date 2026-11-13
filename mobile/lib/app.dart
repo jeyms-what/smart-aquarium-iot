@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'data/repositories/aquarium_repository.dart';
+import 'widgets/glass_panel.dart';
 import 'features/control/control_screen.dart';
 import 'features/dashboard/dashboard_screen.dart';
 import 'features/history/history_screen.dart';
@@ -47,7 +48,7 @@ class _SmartAquariumAppState extends State<SmartAquariumApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Smart Aquarium',
+      title: 'AquaSense',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
@@ -94,16 +95,32 @@ class _AquariumShellState extends State<AquariumShell> {
     ];
 
     return Scaffold(
-      body: SafeArea(child: IndexedStack(index: _selectedIndex, children: pages)),
-      bottomNavigationBar: NavigationBar(
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: Theme.of(context).brightness == Brightness.dark
+                ? const [Color(0xFF071A25), Color(0xFF0A2A35), Color(0xFF071A25)]
+                : const [Color(0xFFEAF7F5), Color(0xFFD8F1ED), Color(0xFFF4FBFA)],
+          ),
+        ),
+        child: SafeArea(child: IndexedStack(index: _selectedIndex, children: pages)),
+      ),
+      bottomNavigationBar: GlassPanel(
+        padding: EdgeInsets.zero,
+        radius: 24,
+        child: NavigationBar(
+        height: 72,
         selectedIndex: _selectedIndex,
         onDestinationSelected: (index) => setState(() => _selectedIndex = index),
         destinations: const [
-          NavigationDestination(icon: Icon(Icons.dashboard_outlined), selectedIcon: Icon(Icons.dashboard), label: 'Home'),
-          NavigationDestination(icon: Icon(Icons.tune), label: 'Control'),
-          NavigationDestination(icon: Icon(Icons.show_chart), label: 'History'),
-          NavigationDestination(icon: Icon(Icons.settings_outlined), label: 'Settings'),
+          NavigationDestination(icon: Icon(Icons.space_dashboard_outlined), selectedIcon: Icon(Icons.space_dashboard_rounded), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.tune_rounded), selectedIcon: Icon(Icons.tune_rounded), label: 'Control'),
+          NavigationDestination(key: ValueKey('nav-history'), icon: Icon(Icons.query_stats_rounded), selectedIcon: Icon(Icons.query_stats_rounded), label: 'History'),
+          NavigationDestination(icon: Icon(Icons.settings_outlined), selectedIcon: Icon(Icons.settings_rounded), label: 'Settings'),
         ],
+        ),
       ),
     );
   }

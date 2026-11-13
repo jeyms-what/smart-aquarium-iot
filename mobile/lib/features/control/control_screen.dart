@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/models/device_command.dart';
 import '../../data/repositories/aquarium_repository.dart';
+import '../../widgets/glass_panel.dart';
 
 class ControlScreen extends StatefulWidget {
   const ControlScreen({required this.repository, super.key});
@@ -117,31 +118,32 @@ class _ControlScreenState extends State<ControlScreen> {
         !command.isExpiredAt(now);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Equipment control')),
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(title: const Text('Equipment control'), titleSpacing: 20),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(18, 12, 18, 28),
         children: [
           _SafetyNotice(
             enabled: _commandsEnabled,
             repositoryAvailable: repositoryAvailable,
           ),
           const SizedBox(height: 16),
-          _PumpCard(
+          _PumpGlassCard(
             enabled: _commandsEnabled && !_isSubmitting,
             isSubmitting: _isSubmitting && _activeAction?.startsWith('pump_') == true,
             onTurnOn: () => _submitPumpCommand(true),
             onTurnOff: () => _submitPumpCommand(false),
           ),
           const SizedBox(height: 12),
-          _FeederCard(
+          _FeederGlassCard(
             enabled: _commandsEnabled && !_isSubmitting && !feedPending,
             isSubmitting: _isSubmitting && _activeAction == 'feed',
             onFeedNow: _submitFeedCommand,
           ),
           if (_errorMessage != null) ...[
             const SizedBox(height: 12),
-            Card(
-              color: theme.colorScheme.errorContainer,
+            GlassCard(
+              color: theme.colorScheme.errorContainer.withValues(alpha: 0.28),
               child: Padding(
                 padding: const EdgeInsets.all(14),
                 child: Text(
@@ -153,7 +155,7 @@ class _ControlScreenState extends State<ControlScreen> {
           ],
           if (command != null) ...[
             const SizedBox(height: 18),
-            _CommandStatusCard(
+            _CommandStatusGlassCard(
               command: command,
               now: now,
               isRefreshing: _isRefreshingStatus,
@@ -190,8 +192,8 @@ class _SafetyNotice extends StatelessWidget {
             ? 'Command control is disabled by default. It can only be enabled after the ESP32 command handler, expiry checks, safe boot states, and physical feedback have been implemented and tested.'
             : 'The application has no initialized device repository. Configure the local development API before attempting command integration.';
 
-    return Card(
-      color: theme.colorScheme.surfaceContainerHigh,
+    return GlassCard(
+      color: theme.colorScheme.surfaceContainerHigh.withValues(alpha: 0.42),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
@@ -220,8 +222,8 @@ class _SafetyNotice extends StatelessWidget {
   }
 }
 
-class _PumpCard extends StatelessWidget {
-  const _PumpCard({
+class _PumpGlassCard extends StatelessWidget {
+  const _PumpGlassCard({
     required this.enabled,
     required this.isSubmitting,
     required this.onTurnOn,
@@ -235,7 +237,7 @@ class _PumpCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return GlassCard(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -282,8 +284,8 @@ class _PumpCard extends StatelessWidget {
   }
 }
 
-class _FeederCard extends StatelessWidget {
-  const _FeederCard({
+class _FeederGlassCard extends StatelessWidget {
+  const _FeederGlassCard({
     required this.enabled,
     required this.isSubmitting,
     required this.onFeedNow,
@@ -295,7 +297,7 @@ class _FeederCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return GlassCard(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -331,8 +333,8 @@ class _FeederCard extends StatelessWidget {
   }
 }
 
-class _CommandStatusCard extends StatelessWidget {
-  const _CommandStatusCard({
+class _CommandStatusGlassCard extends StatelessWidget {
+  const _CommandStatusGlassCard({
     required this.command,
     required this.now,
     required this.isRefreshing,
@@ -361,7 +363,7 @@ class _CommandStatusCard extends StatelessWidget {
       _ => command.command,
     };
 
-    return Card(
+    return GlassCard(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

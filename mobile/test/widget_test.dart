@@ -23,7 +23,7 @@ void main() {
   testWidgets('history navigation shows an empty local-history state', (tester) async {
     await tester.pumpWidget(const SmartAquariumApp());
     await tester.pumpAndSettle();
-    await tester.tap(find.byIcon(Icons.show_chart));
+    await tester.tap(find.byKey(const ValueKey('nav-history')));
     await tester.pumpAndSettle();
 
     expect(find.text('No historical records'), findsOneWidget);
