@@ -48,7 +48,7 @@ class _SmartAquariumAppState extends State<SmartAquariumApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'AquaSense',
+      title: 'AquaCare',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
