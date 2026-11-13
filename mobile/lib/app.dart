@@ -47,7 +47,7 @@ class _SmartAquariumAppState extends State<SmartAquariumApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Smart Aquarium',
+      title: 'AquaSense',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
@@ -96,13 +96,14 @@ class _AquariumShellState extends State<AquariumShell> {
     return Scaffold(
       body: SafeArea(child: IndexedStack(index: _selectedIndex, children: pages)),
       bottomNavigationBar: NavigationBar(
+        height: 72,
         selectedIndex: _selectedIndex,
         onDestinationSelected: (index) => setState(() => _selectedIndex = index),
         destinations: const [
-          NavigationDestination(icon: Icon(Icons.dashboard_outlined), selectedIcon: Icon(Icons.dashboard), label: 'Home'),
-          NavigationDestination(icon: Icon(Icons.tune), label: 'Control'),
-          NavigationDestination(icon: Icon(Icons.show_chart), label: 'History'),
-          NavigationDestination(icon: Icon(Icons.settings_outlined), label: 'Settings'),
+          NavigationDestination(icon: Icon(Icons.space_dashboard_outlined), selectedIcon: Icon(Icons.space_dashboard_rounded), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.tune_rounded), selectedIcon: Icon(Icons.tune_rounded), label: 'Control'),
+          NavigationDestination(icon: Icon(Icons.query_stats_rounded), selectedIcon: Icon(Icons.query_stats_rounded), label: 'History'),
+          NavigationDestination(icon: Icon(Icons.settings_outlined), selectedIcon: Icon(Icons.settings_rounded), label: 'Settings'),
         ],
       ),
     );
