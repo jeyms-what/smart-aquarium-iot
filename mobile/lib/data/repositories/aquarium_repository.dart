@@ -1,4 +1,5 @@
 import '../local/telemetry_store.dart';
+import '../models/device_command.dart';
 import '../models/telemetry_reading.dart';
 import '../remote/telemetry_api_client.dart';
 
@@ -18,6 +19,7 @@ class AquariumRepository {
   final TelemetryApiClient _apiClient;
 
   bool get remoteConfigured => _apiClient.isConfigured;
+  bool get commandControlEnabled => _apiClient.commandControlEnabled;
 
   Future<List<TelemetryReading>> loadLatestCached() =>
       _localStore.getLatestReadings(deviceId);
@@ -36,6 +38,20 @@ class AquariumRepository {
 
   Future<List<TelemetryReading>> fetchRemoteLatest() =>
       _apiClient.fetchLatest(deviceId);
+
+  Future<DeviceCommand> requestPumpState(bool turnOn) => _apiClient.submitCommand(
+        deviceId: deviceId,
+        command: 'SET_PUMP',
+        requestedState: turnOn ? 'ON' : 'OFF',
+      );
+
+  Future<DeviceCommand> requestFeeding() => _apiClient.submitCommand(
+        deviceId: deviceId,
+        command: 'FEED_NOW',
+      );
+
+  Future<DeviceCommand> refreshCommandStatus(String commandId) =>
+      _apiClient.fetchCommandStatus(deviceId: deviceId, commandId: commandId);
 
   Future<void> close() async {
     _apiClient.close();
