@@ -181,7 +181,7 @@ class _AquariumHero extends StatelessWidget {
       MonitoringSource.remote => ('Cloud connection active', 'CONNECTED', Icons.cloud_done_rounded),
       MonitoringSource.cached => ('Showing saved readings', 'CACHED DATA', Icons.storage_rounded),
       MonitoringSource.offline => ('Aquarium is offline', 'OFFLINE', Icons.cloud_off_rounded),
-      MonitoringSource.notConfigured => ('Let’s connect your aquarium', 'SETUP REQUIRED', Icons.sensors_rounded),
+      MonitoringSource.notConfigured => ('Remote API not configured', 'SETUP REQUIRED', Icons.sensors_rounded),
     };
 
     return Container(
