@@ -15,19 +15,19 @@ class SettingsScreen extends StatelessWidget {
         children: [
           Text('DEVICE & CONNECTION', style: TextStyle(color: colors.primary, fontSize: 10, letterSpacing: 1.7, fontWeight: FontWeight.w800)),
           const SizedBox(height: 12),
-          _SettingsTile(
+          const _SettingsTile(
             icon: Icons.devices_other_rounded,
             title: 'Aquarium device',
             subtitle: 'Device connection is not confirmed until heartbeat support is integrated.',
           ),
           const SizedBox(height: 9),
-          _SettingsTile(
+          const _SettingsTile(
             icon: Icons.cloud_outlined,
             title: 'Development API',
             subtitle: AppConfig.apiConfigurationLabel,
           ),
           const SizedBox(height: 9),
-          _SettingsTile(
+          const _SettingsTile(
             icon: Icons.fingerprint_rounded,
             title: 'Device identifier',
             subtitle: AppConfig.deviceId,
@@ -35,13 +35,13 @@ class SettingsScreen extends StatelessWidget {
           const SizedBox(height: 24),
           Text('STORAGE & SECURITY', style: TextStyle(color: colors.primary, fontSize: 10, letterSpacing: 1.7, fontWeight: FontWeight.w800)),
           const SizedBox(height: 12),
-          _SettingsTile(
+          const _SettingsTile(
             icon: Icons.storage_rounded,
             title: 'Local database',
             subtitle: 'SQLite stores received telemetry and synchronization timestamps on this device.',
           ),
           const SizedBox(height: 9),
-          _SettingsTile(
+          const _SettingsTile(
             icon: Icons.security_rounded,
             title: 'Development security',
             subtitle: 'The temporary bearer token is debug-only. Never include it in a release APK or expose the local backend to the internet.',
@@ -49,7 +49,7 @@ class SettingsScreen extends StatelessWidget {
           const SizedBox(height: 24),
           Text('ABOUT', style: TextStyle(color: colors.primary, fontSize: 10, letterSpacing: 1.7, fontWeight: FontWeight.w800)),
           const SizedBox(height: 12),
-          _SettingsTile(
+          const _SettingsTile(
             icon: Icons.info_outline_rounded,
             title: 'Application version',
             subtitle: '0.3.0 — telemetry cache and read-only API integration',
