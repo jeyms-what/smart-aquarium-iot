@@ -2,9 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'widgets/glass_panel.dart';
-
 import 'data/repositories/aquarium_repository.dart';
+import 'widgets/glass_panel.dart';
 import 'features/control/control_screen.dart';
 import 'features/dashboard/dashboard_screen.dart';
 import 'features/history/history_screen.dart';
@@ -90,7 +89,7 @@ class _AquariumShellState extends State<AquariumShell> {
         onToggleTheme: widget.onToggleTheme,
         isDarkMode: widget.isDarkMode,
       ),
-      const ControlScreen(),
+      ControlScreen(repository: widget.controller.repository),
       HistoryScreen(controller: widget.controller),
       const SettingsScreen(),
     ];
