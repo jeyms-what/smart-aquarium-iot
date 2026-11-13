@@ -24,7 +24,7 @@ class AppTheme {
         titleTextStyle: TextStyle(color: Color(0xFF102F38), fontSize: 18, fontWeight: FontWeight.w800),
       ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: const Color(0xFFEAF7F5).withValues(alpha: 0.88),
+        backgroundColor: Colors.transparent,
         indicatorColor: const Color(0xFFC2F3E9),
         elevation: 0,
         labelTextStyle: WidgetStateProperty.resolveWith(
@@ -58,7 +58,7 @@ class AppTheme {
         titleTextStyle: TextStyle(color: Color(0xFFE9FFFC), fontSize: 18, fontWeight: FontWeight.w800),
       ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: _midnightReef.withValues(alpha: 0.94),
+        backgroundColor: Colors.transparent,
         indicatorColor: const Color(0xFF145B61),
         elevation: 0,
         labelTextStyle: WidgetStateProperty.resolveWith(
