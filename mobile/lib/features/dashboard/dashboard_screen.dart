@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/glass_panel.dart';
+
 import '../../data/models/telemetry_reading.dart';
 import '../monitoring/monitoring_controller.dart';
 
@@ -322,10 +324,10 @@ class _MeasurementCard extends StatelessWidget {
                         ? 'STALE · $age old'
                         : 'Measured $age ago';
 
-    return Container(
+    return GlassPanel(padding: EdgeInsets.zero, child: Container(
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
-        color: colors.surfaceContainerLow,
+        color: colors.surfaceContainerLow.withValues(alpha: 0.48),
         borderRadius: BorderRadius.circular(21),
         border: Border.all(color: colors.outlineVariant.withValues(alpha: 0.55)),
       ),
@@ -364,7 +366,7 @@ class _MeasurementCard extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 }
 
@@ -378,10 +380,10 @@ class _EquipmentStatus extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    return Container(
+    return GlassPanel(padding: EdgeInsets.zero, child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 13),
       decoration: BoxDecoration(
-        color: colors.surfaceContainerLow,
+        color: colors.surfaceContainerLow.withValues(alpha: 0.48),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: colors.outlineVariant.withValues(alpha: 0.55)),
       ),
@@ -407,7 +409,7 @@ class _EquipmentStatus extends StatelessWidget {
           Icon(Icons.lock_outline_rounded, color: colors.onSurfaceVariant, size: 18),
         ],
       ),
-    );
+    ));
   }
 }
 
@@ -420,10 +422,10 @@ class _EmptyPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    return Container(
+    return GlassPanel(padding: EdgeInsets.zero, child: Container(
       padding: const EdgeInsets.all(17),
       decoration: BoxDecoration(
-        color: colors.surfaceContainerLow,
+        color: colors.surfaceContainerLow.withValues(alpha: 0.48),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: colors.outlineVariant.withValues(alpha: 0.55)),
       ),
@@ -449,7 +451,7 @@ class _EmptyPanel extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 }
 
