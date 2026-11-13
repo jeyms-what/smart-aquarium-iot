@@ -21,7 +21,7 @@ class SettingsScreen extends StatelessWidget {
             subtitle: 'Device connection is not confirmed until heartbeat support is integrated.',
           ),
           const SizedBox(height: 9),
-          const _SettingsTile(
+          _SettingsTile(
             icon: Icons.cloud_outlined,
             title: 'Development API',
             subtitle: AppConfig.apiConfigurationLabel,
