@@ -136,7 +136,8 @@ smart-aquarium-iot/
 │   │   ├── core/
 │   │   ├── data/
 │   │   ├── features/
-│   │   └── theme/
+│   │   ├── theme/
+│   │   └── widgets/                # Shared UI components (including glass surfaces)
 │   ├── test/
 │   └── pubspec.yaml
 ├── scripts/
@@ -260,6 +261,18 @@ flutter run -d YOUR_DEVICE_ID
 ```
 
 The app can be opened without a configured backend. In that state it should show that the API is not configured and should not invent sensor measurements.
+
+### Aqua Life visual design (PR #7)
+
+The UI redesign proposed in [PR #7](https://github.com/jeyms-what/smart-aquarium-iot/pull/7) gives the mobile app an Aqua Life identity inspired by underwater environments:
+
+- Deep-ocean navy, reef-blue, aqua, turquoise, and seafoam colors in the light and dark themes.
+- Frosted-glass surfaces built with Flutter `BackdropFilter`, translucent gradients, subtle aqua borders, and soft shadows.
+- A reusable `GlassPanel` / `GlassCard` component in `mobile/lib/widgets/glass_panel.dart`.
+- A layered ocean-gradient app background and translucent bottom navigation.
+- Consistent glass styling across Dashboard, Control, History, and Settings.
+
+The design layer does not change telemetry or actuator safety semantics. Unavailable measurements remain unavailable; cached and stale readings retain their status; pump and feeder commands continue to require the existing development configuration and device-side acknowledgment/physical-state verification. The styling has passed the automated Flutter analysis and widget-test workflow for PR #7, but a visual check on a physical Android device is still required.
 
 ## Run the local backend and infrastructure
 
