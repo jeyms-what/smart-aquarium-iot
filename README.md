@@ -1,8 +1,8 @@
-# Smart Aquarium IoT
+# AquaCare
 
-[![Smart Aquarium CI](https://github.com/jeyms-what/smart-aquarium-iot/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/jeyms-what/smart-aquarium-iot/actions/workflows/ci.yml)
+[![AquaCare CI](https://github.com/jeyms-what/smart-aquarium-iot/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/jeyms-what/smart-aquarium-iot/actions/workflows/ci.yml)
 
-An IoT aquarium monitoring and control capstone project built around an ESP32, a Flutter Android application, a Node.js API, MQTT, and PostgreSQL.
+AquaCare is an IoT aquarium monitoring, care, and control capstone project built around an ESP32, a Flutter Android application, a Node.js API, MQTT, and PostgreSQL.
 
 > **Project status: In development.** The current `main` branch is a software baseline, not a finished or hardware-verified aquarium system. The target is a demonstrable integrated MVP by **1 December 2026**.
 
@@ -28,7 +28,7 @@ An IoT aquarium monitoring and control capstone project built around an ESP32, a
 
 ## Project overview
 
-The project is intended to monitor aquarium conditions, provide useful care information, and support safe equipment control.
+AquaCare is intended to monitor aquarium conditions, provide useful care information, and support safe equipment control. The official capstone title is **AquaCare**; **Aqua Life** is the name of the underwater-inspired visual theme used by the mobile app.
 
 Planned hardware includes:
 
@@ -264,7 +264,7 @@ The app can be opened without a configured backend. In that state it should show
 
 ### Aqua Life visual design
 
-The mobile app now uses an Aqua Life visual identity inspired by underwater environments:
+The AquaCare mobile app uses an **Aqua Life** visual identity inspired by underwater environments. AquaCare remains the official project and application name; Aqua Life refers only to the visual theme:
 
 - Deep-ocean navy, reef-blue, aqua, turquoise, and seafoam colors in the light and dark themes.
 - Frosted-glass surfaces built with Flutter `BackdropFilter`, translucent gradients, subtle aqua borders, and soft shadows.
