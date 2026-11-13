@@ -222,7 +222,7 @@ class _SafetyNotice extends StatelessWidget {
   }
 }
 
-class _PumpCard extends StatelessWidget {
+class _PumpGlassCard extends StatelessWidget {
   const _PumpGlassCard({
     required this.enabled,
     required this.isSubmitting,
@@ -284,7 +284,7 @@ class _PumpCard extends StatelessWidget {
   }
 }
 
-class _FeederCard extends StatelessWidget {
+class _FeederGlassCard extends StatelessWidget {
   const _FeederGlassCard({
     required this.enabled,
     required this.isSubmitting,
@@ -333,7 +333,7 @@ class _FeederCard extends StatelessWidget {
   }
 }
 
-class _CommandStatusCard extends StatelessWidget {
+class _CommandStatusGlassCard extends StatelessWidget {
   const _CommandStatusGlassCard({
     required this.command,
     required this.now,
