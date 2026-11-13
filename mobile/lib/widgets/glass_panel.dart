@@ -59,3 +59,30 @@ class GlassPanel extends StatelessWidget {
     );
   }
 }
+
+
+/// A Material Card wrapped in a frosted surface, for content-rich glass panels.
+class GlassCard extends StatelessWidget {
+  const GlassCard({
+    required this.child,
+    this.color,
+    super.key,
+  });
+
+  final Widget child;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassPanel(
+      padding: EdgeInsets.zero,
+      child: Card(
+        margin: EdgeInsets.zero,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        color: (color ?? Colors.transparent).withValues(alpha: color == null ? 0.0 : 0.26),
+        child: child,
+      ),
+    );
+  }
+}
