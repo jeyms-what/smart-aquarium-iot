@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/glass_panel.dart';
+
 import '../../data/models/telemetry_reading.dart';
 import '../monitoring/monitoring_controller.dart';
 
@@ -57,10 +59,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(28),
-                child: Container(
+                child: GlassPanel(padding: EdgeInsets.zero, child: Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: colors.surfaceContainerLow,
+                    color: colors.surfaceContainerLow.withValues(alpha: 0.48),
                     borderRadius: BorderRadius.circular(24),
                     border: Border.all(color: colors.outlineVariant.withValues(alpha: 0.55)),
                   ),
@@ -82,7 +84,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         style: TextStyle(color: colors.onSurfaceVariant, height: 1.5),
                       ),
                     ],
-                  ),
+                  )),
                 ),
               ),
             );
@@ -97,7 +99,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               final value = reading.hasUsableValue
                   ? '${reading.formattedValue} ${reading.displayUnit}'
                   : 'Invalid / unavailable';
-              return Container(
+              return GlassPanel(padding: EdgeInsets.zero, child: Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   color: colors.surfaceContainerLow,
@@ -122,7 +124,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     Text(value, textAlign: TextAlign.end, style: const TextStyle(fontWeight: FontWeight.w700)),
                   ],
                 ),
-              );
+              ));;
             },
           );
         },
