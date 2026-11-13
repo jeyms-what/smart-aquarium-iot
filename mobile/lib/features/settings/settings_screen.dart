@@ -10,6 +10,7 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(title: const Text('Settings'), titleSpacing: 20),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(18, 10, 18, 28),
