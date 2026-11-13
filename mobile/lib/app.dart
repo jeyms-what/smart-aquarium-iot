@@ -94,7 +94,18 @@ class _AquariumShellState extends State<AquariumShell> {
     ];
 
     return Scaffold(
-      body: SafeArea(child: IndexedStack(index: _selectedIndex, children: pages)),
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: Theme.of(context).brightness == Brightness.dark
+                ? const [Color(0xFF071A25), Color(0xFF0A2A35), Color(0xFF071A25)]
+                : const [Color(0xFFEAF7F5), Color(0xFFD8F1ED), Color(0xFFF4FBFA)],
+          ),
+        ),
+        child: SafeArea(child: IndexedStack(index: _selectedIndex, children: pages)),
+      ),
       bottomNavigationBar: NavigationBar(
         height: 72,
         selectedIndex: _selectedIndex,
