@@ -77,7 +77,7 @@ class DashboardScreen extends StatelessWidget {
                   children: [
                     _AquariumHero(snapshot: snapshot),
                     const SizedBox(height: 24),
-                    _SectionHeading(
+                    const _SectionHeading(
                       eyebrow: 'LIVE TELEMETRY',
                       title: 'Water conditions',
                       trailing: '3 SENSORS',
