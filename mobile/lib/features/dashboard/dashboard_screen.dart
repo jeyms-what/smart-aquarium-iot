@@ -145,7 +145,7 @@ class DashboardScreen extends StatelessWidget {
                     const SizedBox(height: 12),
                     const _EmptyPanel(
                       icon: Icons.eco_rounded,
-                      title: 'Your care insights are on hold',
+                      title: 'No recommendation available',
                       message: 'Connect valid sensor readings and add your fish species profile to receive relevant care recommendations.',
                     ),
                     const SizedBox(height: 20),
