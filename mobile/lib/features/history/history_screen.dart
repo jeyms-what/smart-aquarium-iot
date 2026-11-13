@@ -30,10 +30,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: const Text('History and analytics'),
-        actions: [IconButton(onPressed: _reload, tooltip: 'Refresh history', icon: const Icon(Icons.refresh))],
+        titleSpacing: 20,
+        actions: [IconButton(onPressed: _reload, tooltip: 'Refresh history', icon: const Icon(Icons.refresh_rounded))],
       ),
       body: FutureBuilder<List<TelemetryReading>>(
         future: _historyFuture,
@@ -55,46 +57,70 @@ class _HistoryScreenState extends State<HistoryScreen> {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(28),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.query_stats, size: 48, color: theme.colorScheme.primary),
-                    const SizedBox(height: 12),
-                    Text('No historical records', style: theme.textTheme.titleLarge),
-                    const SizedBox(height: 6),
-                    const Text(
-                      'History will appear after actual telemetry records have been received and saved on this device.',
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+                child: Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: colors.surfaceContainerLow,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: colors.outlineVariant.withValues(alpha: 0.55)),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 66,
+                        height: 66,
+                        decoration: BoxDecoration(color: colors.primary.withValues(alpha: 0.13), borderRadius: BorderRadius.circular(22)),
+                        child: Icon(Icons.query_stats_rounded, size: 34, color: colors.primary),
+                      ),
+                      const SizedBox(height: 17),
+                      Text('No historical records', style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+                      const SizedBox(height: 8),
+                      Text(
+                        'History will appear after actual telemetry records have been received and saved on this device.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: colors.onSurfaceVariant, height: 1.5),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
           }
 
           return ListView.separated(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(16),
             itemCount: readings.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 4),
+            separatorBuilder: (_, __) => const SizedBox(height: 9),
             itemBuilder: (context, index) {
               final reading = readings[index];
               final value = reading.hasUsableValue
                   ? '${reading.formattedValue} ${reading.displayUnit}'
                   : 'Invalid / unavailable';
-              return Card(
-                child: ListTile(
-                  leading: Icon(
-                    reading.hasUsableValue ? Icons.sensors : Icons.sensors_off,
-                    color: reading.hasUsableValue
-                        ? theme.colorScheme.primary
-                        : theme.colorScheme.error,
-                  ),
-                  title: Text(reading.displayName),
-                  subtitle: Text(
-                    '${reading.measuredAt.toLocal()}\nSequence ${reading.sequenceNumber} · ${reading.timeQuality}',
-                  ),
-                  isThreeLine: true,
-                  trailing: Text(value, textAlign: TextAlign.end),
+              return Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: colors.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: colors.outlineVariant.withValues(alpha: 0.5)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(reading.hasUsableValue ? Icons.sensors_rounded : Icons.sensors_off_rounded, color: reading.hasUsableValue ? colors.primary : colors.error),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(reading.displayName, style: const TextStyle(fontWeight: FontWeight.w800)),
+                          const SizedBox(height: 4),
+                          Text('${reading.measuredAt.toLocal()} · Sequence ${reading.sequenceNumber}', style: TextStyle(color: colors.onSurfaceVariant, fontSize: 10)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(value, textAlign: TextAlign.end, style: const TextStyle(fontWeight: FontWeight.w700)),
+                  ],
                 ),
               );
             },
