@@ -1,5 +1,5 @@
 name: smart_aquarium_mobile
-description: Smart Aquarium IoT monitoring and control application.
+description: AquaCare smart aquarium monitoring, care, and control application.
 publish_to: "none"
 version: 0.3.0+3
 
