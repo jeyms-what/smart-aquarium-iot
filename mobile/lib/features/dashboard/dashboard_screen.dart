@@ -51,7 +51,7 @@ class DashboardScreen extends StatelessWidget {
                     const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('AQUASENSE', style: TextStyle(fontSize: 15, letterSpacing: 1.5, fontWeight: FontWeight.w800)),
+                        Text('AQUACARE', style: TextStyle(fontSize: 15, letterSpacing: 1.5, fontWeight: FontWeight.w800)),
                         Text('SMART AQUARIUM', style: TextStyle(fontSize: 9, letterSpacing: 1.8, fontWeight: FontWeight.w600)),
                       ],
                     ),
