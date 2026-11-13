@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'widgets/glass_panel.dart';
+
 import 'data/repositories/aquarium_repository.dart';
 import 'features/control/control_screen.dart';
 import 'features/dashboard/dashboard_screen.dart';
@@ -106,7 +108,10 @@ class _AquariumShellState extends State<AquariumShell> {
         ),
         child: SafeArea(child: IndexedStack(index: _selectedIndex, children: pages)),
       ),
-      bottomNavigationBar: NavigationBar(
+      bottomNavigationBar: GlassPanel(
+        padding: EdgeInsets.zero,
+        radius: 24,
+        child: NavigationBar(
         height: 72,
         selectedIndex: _selectedIndex,
         onDestinationSelected: (index) => setState(() => _selectedIndex = index),
@@ -116,6 +121,7 @@ class _AquariumShellState extends State<AquariumShell> {
           NavigationDestination(icon: Icon(Icons.query_stats_rounded), selectedIcon: Icon(Icons.query_stats_rounded), label: 'History'),
           NavigationDestination(icon: Icon(Icons.settings_outlined), selectedIcon: Icon(Icons.settings_rounded), label: 'Settings'),
         ],
+        ),
       ),
     );
   }
