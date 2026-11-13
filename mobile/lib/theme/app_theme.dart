@@ -14,11 +14,11 @@ class AppTheme {
       colorScheme: scheme,
       scaffoldBackgroundColor: const Color(0xFFF4F9F9),
       appBarTheme: const AppBarTheme(
-        backgroundColor: const Color(0xFFF4F9F9),
-        foregroundColor: const Color(0xFF102B32),
+        backgroundColor: Color(0xFFF4F9F9),
+        foregroundColor: Color(0xFF102B32),
         surfaceTintColor: Colors.transparent,
         elevation: 0,
-        titleTextStyle: const TextStyle(color: Color(0xFF102B32), fontSize: 18, fontWeight: FontWeight.w800),
+        titleTextStyle: TextStyle(color: Color(0xFF102B32), fontSize: 18, fontWeight: FontWeight.w800),
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: Colors.white,
