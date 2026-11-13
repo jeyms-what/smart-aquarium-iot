@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/glass_panel.dart';
+
 class ControlScreen extends StatelessWidget {
   const ControlScreen({super.key});
 
@@ -68,10 +70,10 @@ class _ControlTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    return Container(
+    return GlassPanel(padding: EdgeInsets.zero, child: Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: colors.surfaceContainerLow,
+        color: colors.surfaceContainerLow.withValues(alpha: 0.48),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: colors.outlineVariant.withValues(alpha: 0.55)),
       ),
@@ -97,6 +99,6 @@ class _ControlTile extends StatelessWidget {
           Icon(Icons.lock_rounded, color: colors.onSurfaceVariant, size: 19),
         ],
       ),
-    );
+    ));
   }
 }
