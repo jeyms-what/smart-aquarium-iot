@@ -50,6 +50,7 @@ class MonitoringController extends ChangeNotifier {
   bool get isRefreshing => _isRefreshing;
   bool get isInitialized => _initialized;
   bool get remoteConfigured => _repository?.remoteConfigured ?? false;
+  AquariumRepository? get repository => _repository;
 
   Future<void> initialize() async {
     if (_initialized) return;
