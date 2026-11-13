@@ -57,7 +57,7 @@ class SettingsScreen extends StatelessWidget {
             subtitle: '0.3.0 — telemetry cache and read-only API integration',
           ),
           const SizedBox(height: 18),
-          Center(child: Text('AQUASENSE  •  SMART AQUARIUM', style: TextStyle(color: colors.onSurfaceVariant, fontSize: 9, letterSpacing: 1.5, fontWeight: FontWeight.w700))),
+          Center(child: Text('AQUACARE  •  SMART AQUARIUM CARE', style: TextStyle(color: colors.onSurfaceVariant, fontSize: 9, letterSpacing: 1.5, fontWeight: FontWeight.w700))),
         ],
       ),
     );
