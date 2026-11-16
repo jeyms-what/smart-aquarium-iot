@@ -502,7 +502,8 @@ Open a pull request on GitHub with `main` as the base branch. Include a summary,
 | [Development plan](docs/development-plan.md) | Milestones, dates, work ownership, and acceptance gates |
 | [Development status](docs/development-status.md) | Implemented, pending, and not-yet-verified work |
 | [MQTT and API contract](docs/mqtt-contract.md) | Topic names, payloads, and endpoint expectations |
-| [Mobile data layer](docs/mobile-data-layer.md) | Flutter repository, API, and SQLite design |\n| [Fish care guidance](docs/fish-care-guidance.md) | Species ranges, source references, care notes, and assessment limitations |
+| [Mobile data layer](docs/mobile-data-layer.md) | Flutter repository, API, and SQLite design |
+| [Fish care guidance](docs/fish-care-guidance.md) | Species ranges, source references, care notes, and assessment limitations |
 | [Acceptance tests](docs/acceptance-tests.md) | Test procedures and evidence requirements |
 | [Team responsibilities](docs/team-responsibilities.md) | Team roles and collaboration expectations |
 | [Changelog](CHANGELOG.md) | Version history |
