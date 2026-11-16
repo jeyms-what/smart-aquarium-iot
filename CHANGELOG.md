@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.0 — Unreleased
+
+- Added a dedicated Fish Care tab with Betta, Neon Tetra, Goldfish, and Guppy starter profiles.
+- Added local SQLite persistence for the selected fish species without migrating the telemetry database.
+- Added conservative comparison of valid, fresh temperature and pH telemetry against sourced care-guide ranges.
+- Added habitat, social behavior, feeding, and water-quality guidance with source links and explicit scope limitations.
+- Added dashboard navigation into Fish Care and automated assessment/widget tests; CI and physical-device verification are pending.
+- Kept pump and feeder commands locked pending device firmware, safety interlocks, authorization, and physical feedback.
+
 ## 0.3.0 — 2026-11-09
 
 - Added SQLite telemetry persistence for Android/iOS.
