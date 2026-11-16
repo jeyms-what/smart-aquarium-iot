@@ -141,7 +141,7 @@ class DashboardScreen extends StatelessWidget {
                     const _EquipmentStatus(
                       title: 'Automatic feeder',
                       detail: 'Device feedback not yet connected',
-                      icon: Icons.ramen_dining_rounded,
+                      icon: Icons.set_meal_rounded,
                       accent: Color(0xFFFFB86B),
                     ),
                     const SizedBox(height: 25),
