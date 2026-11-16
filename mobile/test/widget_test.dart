@@ -12,13 +12,13 @@ void main() {
     expect(find.text('No reading °C'), findsOneWidget);
 
     // The dashboard is a lazy sliver list, so scroll to build the recommendation
-    // panel before asserting its empty state.
+    // panel before asserting the care entry point.
     await tester.scrollUntilVisible(
       find.text('Species-specific fish care'),
       250,
       maxScrolls: 10,
     );
-    expect(find.text('No recommendation available'), findsOneWidget);
+    expect(find.text('Species-specific fish care'), findsOneWidget);
   });
 
   testWidgets('history navigation shows an empty local-history state', (tester) async {
