@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'data/repositories/aquarium_repository.dart';
+import 'features/care/fish_care_profile_store.dart';
+import 'features/care/fish_care_screen.dart';
 import 'widgets/glass_panel.dart';
 import 'features/control/control_screen.dart';
 import 'features/dashboard/dashboard_screen.dart';
@@ -12,11 +14,12 @@ import 'features/settings/settings_screen.dart';
 import 'theme/app_theme.dart';
 
 class SmartAquariumApp extends StatefulWidget {
-  const SmartAquariumApp({super.key, this.repository});
+  const SmartAquariumApp({super.key, this.repository, this.fishCareProfileStore});
 
   /// Null is used by widget previews/tests. The production entry point injects
   /// the SQLite-backed repository from main.dart.
   final AquariumRepository? repository;
+  final FishCareProfileStore? fishCareProfileStore;
 
   @override
   State<SmartAquariumApp> createState() => _SmartAquariumAppState();
@@ -25,11 +28,13 @@ class SmartAquariumApp extends StatefulWidget {
 class _SmartAquariumAppState extends State<SmartAquariumApp> {
   ThemeMode _themeMode = ThemeMode.dark;
   late final MonitoringController _monitoringController;
+  late final FishCareProfileStore _fishCareProfileStore;
 
   @override
   void initState() {
     super.initState();
     _monitoringController = MonitoringController(repository: widget.repository);
+    _fishCareProfileStore = widget.fishCareProfileStore ?? InMemoryFishCareProfileStore();
     unawaited(_monitoringController.initialize());
   }
 
@@ -42,6 +47,7 @@ class _SmartAquariumAppState extends State<SmartAquariumApp> {
   @override
   void dispose() {
     _monitoringController.dispose();
+    unawaited(_fishCareProfileStore.close());
     super.dispose();
   }
 
@@ -55,6 +61,7 @@ class _SmartAquariumAppState extends State<SmartAquariumApp> {
       themeMode: _themeMode,
       home: AquariumShell(
         controller: _monitoringController,
+        fishCareProfileStore: _fishCareProfileStore,
         onToggleTheme: _toggleTheme,
         isDarkMode: _themeMode == ThemeMode.dark,
       ),
@@ -65,12 +72,14 @@ class _SmartAquariumAppState extends State<SmartAquariumApp> {
 class AquariumShell extends StatefulWidget {
   const AquariumShell({
     required this.controller,
+    required this.fishCareProfileStore,
     required this.onToggleTheme,
     required this.isDarkMode,
     super.key,
   });
 
   final MonitoringController controller;
+  final FishCareProfileStore fishCareProfileStore;
   final VoidCallback onToggleTheme;
   final bool isDarkMode;
 
@@ -88,8 +97,13 @@ class _AquariumShellState extends State<AquariumShell> {
         controller: widget.controller,
         onToggleTheme: widget.onToggleTheme,
         isDarkMode: widget.isDarkMode,
+        onOpenCare: () => setState(() => _selectedIndex = 2),
       ),
       ControlScreen(repository: widget.controller.repository),
+      FishCareScreen(
+        controller: widget.controller,
+        profileStore: widget.fishCareProfileStore,
+      ),
       HistoryScreen(controller: widget.controller),
       const SettingsScreen(),
     ];
@@ -117,6 +131,7 @@ class _AquariumShellState extends State<AquariumShell> {
         destinations: const [
           NavigationDestination(icon: Icon(Icons.space_dashboard_outlined), selectedIcon: Icon(Icons.space_dashboard_rounded), label: 'Home'),
           NavigationDestination(icon: Icon(Icons.tune_rounded), selectedIcon: Icon(Icons.tune_rounded), label: 'Control'),
+          NavigationDestination(key: ValueKey('nav-care'), icon: Icon(Icons.set_meal_outlined), selectedIcon: Icon(Icons.set_meal_rounded), label: 'Care'),
           NavigationDestination(key: ValueKey('nav-history'), icon: Icon(Icons.query_stats_rounded), selectedIcon: Icon(Icons.query_stats_rounded), label: 'History'),
           NavigationDestination(icon: Icon(Icons.settings_outlined), selectedIcon: Icon(Icons.settings_rounded), label: 'Settings'),
         ],
