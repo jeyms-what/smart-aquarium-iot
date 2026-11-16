@@ -29,6 +29,7 @@ class TelemetryReading {
         'water_temperature' => 'Water temperature',
         'water_level' => 'Water level',
         'turbidity' => 'Turbidity',
+        'ph' || 'water_ph' => 'pH',
         _ => sensorCode.replaceAll('_', ' '),
       };
 
