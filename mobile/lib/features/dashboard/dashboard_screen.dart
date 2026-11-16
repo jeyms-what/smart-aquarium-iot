@@ -10,12 +10,14 @@ class DashboardScreen extends StatelessWidget {
     required this.controller,
     required this.onToggleTheme,
     required this.isDarkMode,
+    required this.onOpenCare,
     super.key,
   });
 
   final MonitoringController controller;
   final VoidCallback onToggleTheme;
   final bool isDarkMode;
+  final VoidCallback onOpenCare;
 
   @override
   Widget build(BuildContext context) {
@@ -145,10 +147,11 @@ class DashboardScreen extends StatelessWidget {
                     const SizedBox(height: 25),
                     const _SectionHeading(eyebrow: 'PERSONALIZED FISH CARE', title: 'Care insights'),
                     const SizedBox(height: 12),
-                    const _EmptyPanel(
-                      icon: Icons.eco_rounded,
-                      title: 'No recommendation available',
-                      message: 'Connect valid sensor readings and add your fish species profile to receive relevant care recommendations.',
+                    _EmptyPanel(
+                      icon: Icons.set_meal_rounded,
+                      title: 'Species-specific fish care',
+                      message: 'Choose your fish species to compare available readings with care-guide ranges and view habitat, feeding, and water-quality guidance.',
+                      onTap: onOpenCare,
                     ),
                     const SizedBox(height: 20),
                     Text(
@@ -414,42 +417,52 @@ class _EquipmentStatus extends StatelessWidget {
 }
 
 class _EmptyPanel extends StatelessWidget {
-  const _EmptyPanel({required this.icon, required this.title, required this.message});
+  const _EmptyPanel({required this.icon, required this.title, required this.message, required this.onTap});
   final IconData icon;
   final String title;
   final String message;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    return GlassPanel(padding: EdgeInsets.zero, child: Container(
-      padding: const EdgeInsets.all(17),
-      decoration: BoxDecoration(
-        color: colors.surfaceContainerLow.withValues(alpha: 0.48),
+    return GlassPanel(padding: EdgeInsets.zero, child: Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: colors.outlineVariant.withValues(alpha: 0.55)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(color: colors.primary.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(14)),
-            child: Icon(icon, color: colors.primary),
+        child: Container(
+          padding: const EdgeInsets.all(17),
+          decoration: BoxDecoration(
+            color: colors.surfaceContainerLow.withValues(alpha: 0.48),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: colors.outlineVariant.withValues(alpha: 0.55)),
           ),
-          const SizedBox(width: 13),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
-                const SizedBox(height: 5),
-                Text(message, style: TextStyle(color: colors.onSurfaceVariant, fontSize: 11, height: 1.45)),
-              ],
-            ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(color: colors.primary.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(14)),
+                child: Icon(icon, color: colors.primary),
+              ),
+              const SizedBox(width: 13),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
+                    const SizedBox(height: 5),
+                    Text(message, style: TextStyle(color: colors.onSurfaceVariant, fontSize: 11, height: 1.45)),
+                    const SizedBox(height: 8),
+                    Text('OPEN FISH CARE  →', style: TextStyle(color: colors.primary, fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 0.7)),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     ));
   }
