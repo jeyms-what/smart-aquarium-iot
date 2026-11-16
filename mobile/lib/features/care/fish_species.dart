@@ -192,10 +192,8 @@ class FishSpeciesCare {
         unit: 'pH',
       );
     }
-    return CareRangeAssessment(
-      status: reading == null
-          ? CareRangeStatus.notMeasured
-          : CareRangeStatus.notMeasured,
+    return const CareRangeAssessment(
+      status: CareRangeStatus.notMeasured,
       label: 'Not measured',
       detail: 'A pH sensor or manual pH test result has not been provided.',
       unit: 'pH',
