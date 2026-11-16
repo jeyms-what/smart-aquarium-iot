@@ -5,13 +5,16 @@ Last updated: 9 November 2026.
 ## Completed in the repository
 
 - Single-software-developer work model and supporting hardware/QA responsibilities documented.
-- Flutter shell with dashboard, controls, history, and settings sections.
+- Flutter shell with dashboard, controls, fish care, history, and settings sections.
+- Feature branch `feature/species-care-recommendations`: offline Betta, Neon Tetra, Goldfish, and Guppy care profiles; persistent species selection; temperature/pH range assessment; husbandry guidance with source notes.
 - SQLite telemetry store schema and persistence implementation.
 - Telemetry model preserving validity, event/device identity, measurement/receipt timestamps, time quality, and sequence number.
 - Read-only API client for `GET /api/v1/devices/{deviceId}/telemetry/latest`.
 - Dashboard refresh flow and backend/cached/offline/not-configured states.
 - Per-reading age display; records older than two minutes are visibly labelled stale.
 - History view backed by local SQLite records.
+- Separate SQLite persistence for the selected fish-care species profile.
+- Fish-care assessments distinguish within-range, outside-range, missing, invalid, stale, unsupported-unit, and unverified-time readings.
 - Development bearer token accepted only by debug builds; production user authentication remains required.
 - Backend latest-telemetry response extended with `event_id` and `device_id` and deterministic ordering.
 - Controls remain disabled until secure user authorization, device acknowledgments, and physical feedback are available.
@@ -29,6 +32,10 @@ Last updated: 9 November 2026.
 These are user-provided observations from screenshots, not tests executed in this development container.
 
 ## Not yet verified
+
+- New fish-care feature branch: Flutter analyze/test and GitHub Actions CI result pending.
+- Fish-care profile persistence on physical Android device pending.
+- Real pH telemetry integration and sensor calibration pending; current generic TDS hardware does not provide pH.
 
 - Version 0.3.0 Flutter dependency resolution on the user's PC.
 - `flutter analyze` on version 0.3.0.
