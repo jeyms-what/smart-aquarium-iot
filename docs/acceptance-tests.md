@@ -24,7 +24,11 @@ Status values: `PASS`, `FAIL`, `BLOCKED`, `NOT RUN`.
 | OFF-001 | P0 | Disconnect internet | Local automation and event queue implemented | ESP32 continues local safety/monitoring and stores events | BLOCKED — firmware offline logic pending |
 | OFF-002 | P0 | Restore internet and synchronize | Offline events stored | Server receives queued records without data loss or duplicate rows | BLOCKED — sync not implemented |
 | AI-001 | P1 | Evaluate valid species-specific condition | Verified profile and test fixture/unit test available | Recommendation shows actual input, rule/source, severity, explanation, and limitation | NOT RUN |
-| AI-002 | P1 | Evaluate missing/stale/invalid input | Recommendation engine implemented | Engine does not declare aquarium safe; stale or invalid data is identified | NOT RUN |\n| CARE-001 | P1 | Select a fish species profile | Fish Care screen available | Selected species and care notes are displayed and saved locally | NOT RUN |\n| CARE-002 | P1 | Compare valid temperature/pH telemetry | Species selected; valid timestamped telemetry available | App compares only matching sensor channels and displays the sourced guideline range and assessment | NOT RUN |\n| CARE-003 | P1 | Evaluate missing, stale, invalid, unsupported-unit, or uptime-only reading | Species selected | Reading is not marked within range; its limitation is explicitly identified | NOT RUN |\n| CARE-004 | P1 | Restart app after selecting a species | Species selected and SQLite profile saved | Same selected species profile is restored | NOT RUN |
+| AI-002 | P1 | Evaluate missing/stale/invalid input | Recommendation engine implemented | Engine does not declare aquarium safe; stale or invalid data is identified | NOT RUN |
+| CARE-001 | P1 | Select a fish species profile | Fish Care screen available | Selected species and care notes are displayed and saved locally | NOT RUN |
+| CARE-002 | P1 | Compare valid temperature/pH telemetry | Species selected; valid timestamped telemetry available | App compares only matching sensor channels and displays the sourced guideline range and assessment | NOT RUN |
+| CARE-003 | P1 | Evaluate missing, stale, invalid, unsupported-unit, or uptime-only reading | Species selected | Reading is not marked within range; its limitation is explicitly identified | NOT RUN |
+| CARE-004 | P1 | Restart app after selecting a species | Species selected and SQLite profile saved | Same selected species profile is restored | NOT RUN |
 | NOT-001 | P1 | Submit FCM notification | Firebase project, app registration, permission, backend credentials configured | Backend records submission outcome; handset receipt is checked separately | NOT RUN |
 | SMS-001 | P1 | Submit direct LTE SMS | Compatible modem/SIM, antenna, signal, and SMS service | Modem submission result is recorded; delivery is verified separately where possible | BLOCKED — modem/SIM pending |
 | LTE-001 | P1 | Establish LTE data session | Compatible modem/SIM and supply available | Modem registers and establishes data connectivity | BLOCKED — modem/SIM pending |
@@ -33,7 +37,11 @@ Status values: `PASS`, `FAIL`, `BLOCKED`, `NOT RUN`.
 | QA-001 | P0 | Cold restart and regression | Integrated MVP available | Device/app/backend restart behavior is documented; no critical regression | NOT RUN |
 | REL-001 | P0 | Generate Android APK | Flutter Android build environment configured | APK builds and installs on target Android phone | NOT RUN |
 
-## Species-care automated test coverage\n\nThe feature branch adds automated tests for temperature range comparison, Fahrenheit-to-Celsius normalization, missing pH, stale readings, uptime-only timestamps, and the Neon Tetra source qualification. GitHub Actions execution is still pending; these tests are not marked PASS until the workflow succeeds.\n\n## Execution record
+## Species-care automated test coverage
+
+The feature branch adds automated tests for temperature range comparison, Fahrenheit-to-Celsius normalization, missing pH, stale readings, uptime-only timestamps, and the Neon Tetra source qualification. GitHub Actions execution is still pending; these tests are not marked PASS until the workflow succeeds.
+
+## Execution record
 
 Append one record per execution. Keep previous failures; do not overwrite history when a retest passes.
 
