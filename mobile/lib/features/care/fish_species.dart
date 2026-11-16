@@ -63,7 +63,10 @@ class CareRangeAssessment {
         unit: unit,
       );
     }
-    if (reading.timeQuality == 'uptime_only') {
+    if (reading.timeQuality == 'uptime_only' ||
+        reading.measuredAt.toLocal().isAfter(
+          DateTime.now().add(const Duration(minutes: 1)),
+        )) {
       return CareRangeAssessment(
         status: CareRangeStatus.timeUnverified,
         label: 'Time not verified',
@@ -195,7 +198,7 @@ class FishSpeciesCare {
     return const CareRangeAssessment(
       status: CareRangeStatus.notMeasured,
       label: 'Not measured',
-      detail: 'A pH sensor or manual pH test result has not been provided.',
+      detail: 'No pH telemetry is available. The TDS sensor cannot provide a pH measurement.',
       unit: 'pH',
     );
   }
