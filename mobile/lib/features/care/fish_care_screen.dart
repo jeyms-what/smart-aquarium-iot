@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../data/models/telemetry_reading.dart';
 import '../../widgets/glass_panel.dart';
 import '../monitoring/monitoring_controller.dart';
 import 'fish_care_profile_store.dart';
