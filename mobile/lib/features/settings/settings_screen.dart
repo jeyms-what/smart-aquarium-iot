@@ -54,7 +54,7 @@ class SettingsScreen extends StatelessWidget {
           const _SettingsTile(
             icon: Icons.info_outline_rounded,
             title: 'Application version',
-            subtitle: '0.3.0 — telemetry cache and read-only API integration',
+            subtitle: '0.4.0 — species-specific fish care and local profiles',
           ),
           const SizedBox(height: 18),
           Center(child: Text('AQUACARE  •  SMART AQUARIUM CARE', style: TextStyle(color: colors.onSurfaceVariant, fontSize: 9, letterSpacing: 1.5, fontWeight: FontWeight.w700))),
