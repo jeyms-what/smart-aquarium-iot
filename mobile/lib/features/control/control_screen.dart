@@ -305,7 +305,7 @@ class _FeederGlassCard extends StatelessWidget {
           children: [
             const Row(
               children: [
-                Icon(Icons.pets_outlined),
+                Icon(Icons.set_meal_outlined),
                 SizedBox(width: 10),
                 Text('Automatic feeder', style: TextStyle(fontWeight: FontWeight.w700)),
               ],
