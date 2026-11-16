@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -29,7 +31,7 @@ class _FishCareScreenState extends State<FishCareScreen> {
   @override
   void initState() {
     super.initState();
-    _loadProfile();
+    unawaited(_loadProfile());
   }
 
   Future<void> _loadProfile() async {
@@ -68,7 +70,7 @@ class _FishCareScreenState extends State<FishCareScreen> {
   }
 
   void _copySource(String url) {
-    Clipboard.setData(ClipboardData(text: url));
+    unawaited(Clipboard.setData(ClipboardData(text: url)));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Care guide URL copied to clipboard.')),
     );
