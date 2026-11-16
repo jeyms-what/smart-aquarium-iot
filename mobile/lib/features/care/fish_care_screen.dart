@@ -196,7 +196,7 @@ class _FishCareScreenState extends State<FishCareScreen> {
                 const SizedBox(height: 14),
                 _SpeciesOverview(species: species),
                 const SizedBox(height: 18),
-                _SectionLabel(
+                const _SectionLabel(
                   title: 'Measured water conditions',
                   subtitle: 'Compared with the selected species guide',
                 ),
@@ -222,7 +222,7 @@ class _FishCareScreenState extends State<FishCareScreen> {
                       'An outside-range result is a prompt to verify the reading and investigate gradually. Do not make rapid temperature or pH changes. These ranges are care-guide recommendations, not lethal limits or veterinary thresholds.',
                 ),
                 const SizedBox(height: 18),
-                _SectionLabel(
+                const _SectionLabel(
                   title: 'Species care recommendations',
                   subtitle: 'Practical care notes for this fish',
                 ),
@@ -248,7 +248,7 @@ class _FishCareScreenState extends State<FishCareScreen> {
                   message: species.waterQualityCare,
                 ),
                 const SizedBox(height: 18),
-                _SectionLabel(
+                const _SectionLabel(
                   title: 'Measurements still needed',
                   subtitle: 'Not measured by the current connected sensor set',
                 ),
