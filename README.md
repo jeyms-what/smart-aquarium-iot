@@ -50,7 +50,7 @@ The following describes the code currently merged into `main`.
 
 | Area | Current state |
 |---|---|
-| Flutter application shell | Implemented: dashboard, control, history, and settings sections |
+| Flutter application shell | Implemented: dashboard, control, fish care, history, and settings sections |
 | Dashboard | Displays explicit not-configured, backend, cached, and offline states |
 | Telemetry model | Implemented: measurement value, unit, validity, timestamps, event/device IDs, sequence, and time quality |
 | Local mobile storage | SQLite telemetry cache and synchronization timestamp storage implemented |
@@ -64,7 +64,7 @@ The following describes the code currently merged into `main`.
 | Mobile pump/feeder control | Kept locked in `main` until firmware execution and physical feedback are ready |
 | LTE, FCM, and direct SMS | Not integrated |
 | Offline event queue and bidirectional synchronization | Not complete |
-| Species-specific recommendations | Not implemented |
+| Species-specific fish care | Implemented in this feature branch: four offline starter profiles, persistent species selection, conservative temperature/pH comparison, and husbandry guidance; CI and phone verification pending |
 | Production authentication and public deployment | Not implemented |
 
 **Important:** A successful backend health check means the backend can reach its configured database and MQTT broker. It does not prove that an ESP32 is online. Likewise, an MQTT publish is not proof of physical pump or feeder operation.
@@ -270,9 +270,9 @@ The AquaCare mobile app uses an **Aqua Life** visual identity inspired by underw
 - Frosted-glass surfaces built with Flutter `BackdropFilter`, translucent gradients, subtle aqua borders, and soft shadows.
 - A reusable `GlassPanel` / `GlassCard` component in `mobile/lib/widgets/glass_panel.dart`.
 - A layered ocean-gradient app background and translucent bottom navigation.
-- Consistent glass styling across Dashboard, Control, History, and Settings.
+- Consistent glass styling across Dashboard, Control, Care, History, and Settings.
 
-The design layer does not change telemetry or actuator safety semantics. Unavailable measurements remain unavailable; cached and stale readings retain their status; pump and feeder commands continue to require the existing development configuration and device-side acknowledgment/physical-state verification. Automated Flutter analysis and all 9 widget tests passed in [GitHub Actions run #35](https://github.com/jeyms-what/smart-aquarium-iot/actions/runs/43346468183). A visual check on a physical Android device is still recommended.
+The Care tab provides offline Betta, Neon Tetra, Goldfish, and Guppy starter guidance. It compares valid and sufficiently fresh temperature and pH telemetry only; missing or unverified readings are not presented as safe. See [docs/fish-care-guidance.md](docs/fish-care-guidance.md) for source ranges and limitations. The design layer does not change telemetry or actuator safety semantics. Unavailable measurements remain unavailable; cached and stale readings retain their status; pump and feeder commands continue to require the existing development configuration and device-side acknowledgment/physical-state verification. Automated Flutter analysis and all 9 widget tests passed in [GitHub Actions run #35](https://github.com/jeyms-what/smart-aquarium-iot/actions/runs/43346468183). A visual check on a physical Android device is still recommended.
 
 ## Run the local backend and infrastructure
 
@@ -502,7 +502,7 @@ Open a pull request on GitHub with `main` as the base branch. Include a summary,
 | [Development plan](docs/development-plan.md) | Milestones, dates, work ownership, and acceptance gates |
 | [Development status](docs/development-status.md) | Implemented, pending, and not-yet-verified work |
 | [MQTT and API contract](docs/mqtt-contract.md) | Topic names, payloads, and endpoint expectations |
-| [Mobile data layer](docs/mobile-data-layer.md) | Flutter repository, API, and SQLite design |
+| [Mobile data layer](docs/mobile-data-layer.md) | Flutter repository, API, and SQLite design |\n| [Fish care guidance](docs/fish-care-guidance.md) | Species ranges, source references, care notes, and assessment limitations |
 | [Acceptance tests](docs/acceptance-tests.md) | Test procedures and evidence requirements |
 | [Team responsibilities](docs/team-responsibilities.md) | Team roles and collaboration expectations |
 | [Changelog](CHANGELOG.md) | Version history |
@@ -515,7 +515,7 @@ The planned implementation sequence is:
 2. Integrate one real sensor from ESP32 through MQTT, backend, PostgreSQL, API, and Flutter.
 3. Add safe actuator control with command expiry, device acknowledgment, and physical feedback.
 4. Add resilient local event storage and synchronization after connectivity returns.
-5. Add explainable offline recommendations using validated readings and a configured fish/species profile.
+5. Expand explainable offline recommendations using validated readings, more species profiles, and a multi-species stocking/compatibility model.
 6. Integrate FCM, direct SMS, LTE data, and Wi-Fi/LTE failover after the exact modem and network requirements are confirmed.
 7. Complete hardware/software integration testing, documentation, and demonstration preparation.
 
