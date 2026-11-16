@@ -148,7 +148,7 @@ class _FishCareScreenState extends State<FishCareScreen> {
                       else
                         DropdownButtonFormField<String>(
                           key: const ValueKey('fish-species-selector'),
-                          value: _selectedSpeciesId,
+                          initialValue: _selectedSpeciesId,
                           isExpanded: true,
                           decoration: const InputDecoration(
                             labelText: 'Fish species',
