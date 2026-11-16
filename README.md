@@ -136,6 +136,7 @@ smart-aquarium-iot/
 │   │   ├── core/
 │   │   ├── data/
 │   │   ├── features/
+│   │   │   └── care/                # Fish profiles, assessment, and Care screen
 │   │   ├── theme/
 │   │   └── widgets/                # Shared UI components (including glass surfaces)
 │   ├── test/
@@ -503,6 +504,7 @@ Open a pull request on GitHub with `main` as the base branch. Include a summary,
 | [Development status](docs/development-status.md) | Implemented, pending, and not-yet-verified work |
 | [MQTT and API contract](docs/mqtt-contract.md) | Topic names, payloads, and endpoint expectations |
 | [Mobile data layer](docs/mobile-data-layer.md) | Flutter repository, API, and SQLite design |
+| [Fish care guidance](docs/fish-care-guidance.md) | Species care ranges, source references, and assessment limitations |
 | [Fish care guidance](docs/fish-care-guidance.md) | Species ranges, source references, care notes, and assessment limitations |
 | [Acceptance tests](docs/acceptance-tests.md) | Test procedures and evidence requirements |
 | [Team responsibilities](docs/team-responsibilities.md) | Team roles and collaboration expectations |
