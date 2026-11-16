@@ -52,7 +52,8 @@ void main() {
       find.text('Species care recommendations'),
       220,
       maxScrolls: 10,
-    );\n    expect(find.text('Species care recommendations'), findsOneWidget);
+    );
+    expect(find.text('Species care recommendations'), findsOneWidget);
     expect(find.text('Not measured'), findsWidgets);
   });
 
