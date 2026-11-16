@@ -46,7 +46,7 @@ The system must distinguish actual readings from missing, invalid, stale, cached
 
 ## Current implementation status
 
-The following describes the code currently merged into `main`.
+The following describes this feature branch. Changes remain subject to review and merge before they become part of `main`.
 
 | Area | Current state |
 |---|---|
