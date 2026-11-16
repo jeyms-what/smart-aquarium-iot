@@ -48,7 +48,11 @@ void main() {
 
     expect(find.text('Betta'), findsOneWidget);
     expect(profileStore.selectedSpeciesId, 'betta_splendens');
-    await tester.scrollUntilVisible(\n      find.text('Species care recommendations'),\n      220,\n      maxScrolls: 10,\n    );\n    expect(find.text('Species care recommendations'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Species care recommendations'),
+      220,
+      maxScrolls: 10,
+    );\n    expect(find.text('Species care recommendations'), findsOneWidget);
     expect(find.text('Not measured'), findsWidgets);
   });
 
