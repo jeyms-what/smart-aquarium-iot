@@ -1,6 +1,6 @@
-# Development status — version 0.3.0
+# Development status — version 0.4.0 feature branch
 
-Last updated: 9 November 2026.
+Last updated: 16 November 2026.
 
 ## Completed in the repository
 
@@ -50,10 +50,10 @@ These are user-provided observations from screenshots, not tests executed in thi
 
 ## Current next gate
 
-1. Replace the local repository with version 0.3.0 or merge its files exactly as documented.
-2. Run `flutter pub get` in `mobile/`.
-3. Run `flutter analyze` and record output.
-4. Run `flutter devices`; connect a phone if no Android device is listed.
-5. Attempt `flutter run` on Android.
-6. Separately investigate the Code Integrity/AppLocker event blocking `flutter_tester.exe`; do not disable Windows security.
-7. Once the app runs, verify empty-state UI and SQLite initialization before backend integration.
+1. Review and merge the species-care pull request after its CI result and diff have been checked.
+2. In the existing local checkout, fetch the merged changes and update the `mobile/` project.
+3. Run `flutter pub get`, `flutter analyze --fatal-infos`, and `flutter test` from `mobile/`.
+4. Run `flutter devices`, connect the Android phone, and launch the app.
+5. Verify that a selected species survives an app restart and that the Care tab reports missing pH until a real pH reading exists.
+6. Trace a real, calibrated temperature/pH reading through ESP32, backend, API, and the phone before using the comparison as aquarium guidance.
+7. Separately investigate the prior Code Integrity/AppLocker event blocking `flutter_tester.exe`; do not disable Windows security.
