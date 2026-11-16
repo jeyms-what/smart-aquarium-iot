@@ -92,6 +92,50 @@ void main() {
       );
     });
 
+
+    test('temperature above the guide is marked outside range', () {
+      final betta = fishSpeciesById('betta_splendens')!;
+      final reading = _reading(
+        sensorCode: 'water_temperature',
+        value: 30,
+        unit: 'degC',
+      );
+
+      expect(
+        betta.assessTemperature(reading).status,
+        CareRangeStatus.aboveGuideline,
+      );
+    });
+
+    test('unsupported temperature units are not compared', () {
+      final betta = fishSpeciesById('betta_splendens')!;
+      final reading = _reading(
+        sensorCode: 'water_temperature',
+        value: 25,
+        unit: 'volts',
+      );
+
+      expect(
+        betta.assessTemperature(reading).status,
+        CareRangeStatus.unsupportedUnit,
+      );
+    });
+
+    test('future device timestamps are not treated as current readings', () {
+      final betta = fishSpeciesById('betta_splendens')!;
+      final reading = _reading(
+        sensorCode: 'water_temperature',
+        value: 25,
+        unit: 'degC',
+        measuredAt: DateTime.now().toUtc().add(const Duration(minutes: 5)),
+      );
+
+      expect(
+        betta.assessTemperature(reading).status,
+        CareRangeStatus.timeUnverified,
+      );
+    });
+
     test('neon tetra source note explains the group-level guidance', () {
       final neonTetra = fishSpeciesById('neon_tetra')!;
 
