@@ -8,6 +8,11 @@ void main() {
     await tester.pumpWidget(const SmartAquariumApp());
     await tester.pumpAndSettle();
 
+    final dashboardScrollable = find.descendant(
+      of: find.byKey(const ValueKey('dashboard-scroll-view')),
+      matching: find.byType(Scrollable),
+    );
+
     expect(find.text('Remote API not configured'), findsOneWidget);
     expect(find.text('Water temperature'), findsOneWidget);
     expect(find.text('—'), findsWidgets);
@@ -23,6 +28,7 @@ void main() {
         find.text(sensorLabel),
         180,
         maxScrolls: 10,
+        scrollable: dashboardScrollable,
       );
       expect(find.text(sensorLabel), findsOneWidget);
     }
@@ -33,6 +39,7 @@ void main() {
       find.text('Species-specific fish care'),
       250,
       maxScrolls: 10,
+      scrollable: dashboardScrollable,
     );
     expect(find.text('Species-specific fish care'), findsOneWidget);
   });
