@@ -29,6 +29,7 @@ class DashboardScreen extends StatelessWidget {
         return RefreshIndicator(
           onRefresh: controller.refresh,
           child: CustomScrollView(
+            key: const ValueKey('dashboard-scroll-view'),
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
               SliverAppBar(
