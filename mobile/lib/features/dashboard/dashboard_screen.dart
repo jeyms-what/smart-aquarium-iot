@@ -84,12 +84,16 @@ class DashboardScreen extends StatelessWidget {
                     const _SectionHeading(
                       eyebrow: 'LIVE TELEMETRY',
                       title: 'Water conditions',
-                      trailing: '3 SENSORS',
+                      trailing: '5 SENSORS',
                     ),
                     const SizedBox(height: 12),
                     LayoutBuilder(
                       builder: (context, constraints) {
-                        final cardWidth = (constraints.maxWidth - 12) / 2;
+                        final columns = constraints.maxWidth >= 680 ? 3 : 2;
+                        final cardWidth =
+                            (constraints.maxWidth - (12 * (columns - 1))) / columns;
+                        final phReading = snapshot.readingFor('ph') ??
+                            snapshot.readingFor('water_ph');
                         return Wrap(
                           spacing: 12,
                           runSpacing: 12,
@@ -97,11 +101,32 @@ class DashboardScreen extends StatelessWidget {
                             SizedBox(
                               width: cardWidth,
                               child: _MeasurementCard(
-                                title: 'Temperature',
+                                title: 'Water temperature',
                                 unit: '°C',
                                 icon: Icons.thermostat_rounded,
                                 accent: const Color(0xFFFFA66B),
                                 reading: snapshot.readingFor('water_temperature'),
+                              ),
+                            ),
+                            SizedBox(
+                              width: cardWidth,
+                              child: _MeasurementCard(
+                                title: 'TDS',
+                                unit: 'ppm',
+                                icon: Icons.science_rounded,
+                                accent: const Color(0xFF9CCB82),
+                                reading: snapshot.readingFor('tds') ??
+                                    snapshot.readingFor('total_dissolved_solids'),
+                              ),
+                            ),
+                            SizedBox(
+                              width: cardWidth,
+                              child: _MeasurementCard(
+                                title: 'Turbidity',
+                                unit: 'NTU / raw ADC',
+                                icon: Icons.blur_on_rounded,
+                                accent: const Color(0xFF79BDE0),
+                                reading: snapshot.readingFor('turbidity'),
                               ),
                             ),
                             SizedBox(
@@ -117,11 +142,11 @@ class DashboardScreen extends StatelessWidget {
                             SizedBox(
                               width: cardWidth,
                               child: _MeasurementCard(
-                                title: 'Turbidity',
-                                unit: 'NTU or raw ADC',
-                                icon: Icons.blur_on_rounded,
-                                accent: const Color(0xFF9D9AFF),
-                                reading: snapshot.readingFor('turbidity'),
+                                title: 'pH',
+                                unit: 'pH',
+                                icon: Icons.opacity_rounded,
+                                accent: const Color(0xFFA99AFF),
+                                reading: phReading,
                               ),
                             ),
                           ],
@@ -228,7 +253,15 @@ class _AquariumHero extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  const Icon(Icons.more_horiz_rounded, color: Colors.white70),
+                  const Text(
+                    'AQUACARE',
+                    style: TextStyle(
+                      color: Color(0xFF9DE9E1),
+                      fontSize: 9,
+                      letterSpacing: 1.1,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 22),
@@ -313,68 +346,148 @@ class _MeasurementCard extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final currentReading = reading;
     final valid = currentReading?.hasUsableValue ?? false;
-    final displayedUnit = valid ? currentReading!.displayUnit : unit;
+    final displayedUnit = valid
+        ? currentReading!.displayUnit
+        : currentReading?.displayUnit ?? unit;
     final age = currentReading == null ? null : _age(currentReading.measuredAt);
-    final status = currentReading == null
-        ? 'No reading $unit'
-        : !valid
-            ? 'Invalid or unavailable reading'
-            : currentReading.timeQuality == 'uptime_only'
-                ? 'Device wall-clock time is unverified'
-                : age == 'device time ahead'
-                    ? 'Device timestamp is ahead of phone time'
-                    : currentReading.isStale()
-                        ? 'STALE · $age old'
-                        : 'Measured $age ago';
+    final stale = currentReading?.isStale() ?? false;
+    final timeUnverified = currentReading?.timeQuality == 'uptime_only';
+    final timeAhead = age == 'device time ahead';
 
-    return GlassPanel(padding: EdgeInsets.zero, child: Container(
+    final status = currentReading == null
+        ? 'No reading yet'
+        : !valid
+            ? 'Invalid / unavailable'
+            : timeUnverified
+                ? 'Timestamp not verified'
+                : timeAhead
+                    ? 'Device time is ahead'
+                    : stale
+                        ? 'STALE · $age old'
+                        : 'Updated $age ago';
+    final statusColor = !valid
+        ? colors.onSurfaceVariant
+        : stale
+            ? colors.error
+            : timeUnverified || timeAhead
+                ? const Color(0xFFE4AD54)
+                : colors.onSurfaceVariant;
+    final indicatorIcon = currentReading == null
+        ? Icons.more_horiz_rounded
+        : !valid
+            ? Icons.error_outline_rounded
+            : stale
+                ? Icons.schedule_rounded
+                : timeUnverified || timeAhead
+                    ? Icons.access_time_rounded
+                    : Icons.check_circle_outline_rounded;
+
+    return GlassPanel(
       padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: colors.surfaceContainerLow.withValues(alpha: 0.48),
-        borderRadius: BorderRadius.circular(21),
-        border: Border.all(color: colors.outlineVariant.withValues(alpha: 0.55)),
-      ),
+      radius: 20,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                width: 35,
-                height: 35,
-                decoration: BoxDecoration(color: accent.withValues(alpha: 0.14), borderRadius: BorderRadius.circular(12)),
-                child: Icon(icon, color: accent, size: 19),
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: accent, size: 20),
               ),
               const Spacer(),
-              Icon(valid ? Icons.check_circle_outline_rounded : Icons.more_horiz_rounded, color: colors.onSurfaceVariant, size: 17),
+              Icon(indicatorIcon, color: statusColor, size: 17),
             ],
           ),
-          const SizedBox(height: 15),
-          Text(title, style: TextStyle(color: colors.onSurfaceVariant, fontSize: 12, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 5),
+          const SizedBox(height: 14),
           Text(
-            valid ? currentReading!.formattedValue : '—',
+            title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 29, height: 1.05, fontWeight: FontWeight.w800, letterSpacing: -1),
+            style: TextStyle(
+              color: colors.onSurfaceVariant,
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+            ),
           ),
-          const SizedBox(height: 4),
-          Text(displayedUnit, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: colors.onSurfaceVariant, fontSize: 10)),
+          const SizedBox(height: 5),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Flexible(
+                child: Text(
+                  valid ? currentReading!.formattedValue : '—',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 28,
+                    height: 1.05,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.9,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 5),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 3),
+                child: Text(
+                  displayedUnit,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: colors.onSurfaceVariant,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 12),
-          Text(
-            status,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontSize: 9, height: 1.3, color: currentReading?.isStale() == true ? colors.error : colors.onSurfaceVariant),
+          Row(
+            children: [
+              Container(
+                width: 6,
+                height: 6,
+                decoration: BoxDecoration(
+                  color: statusColor,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  status,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 9,
+                    height: 1.3,
+                    color: statusColor,
+                    fontWeight: stale ? FontWeight.w800 : FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
-    ));
+    );
   }
 }
 
 class _EquipmentStatus extends StatelessWidget {
-  const _EquipmentStatus({required this.title, required this.detail, required this.icon, required this.accent});
+  const _EquipmentStatus({
+    required this.title,
+    required this.detail,
+    required this.icon,
+    required this.accent,
+  });
+
   final String title;
   final String detail;
   final IconData icon;
@@ -383,19 +496,18 @@ class _EquipmentStatus extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    return GlassPanel(padding: EdgeInsets.zero, child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 13),
-      decoration: BoxDecoration(
-        color: colors.surfaceContainerLow.withValues(alpha: 0.48),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: colors.outlineVariant.withValues(alpha: 0.55)),
-      ),
+    return GlassPanel(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      radius: 18,
       child: Row(
         children: [
           Container(
             width: 42,
             height: 42,
-            decoration: BoxDecoration(color: accent.withValues(alpha: 0.13), borderRadius: BorderRadius.circular(14)),
+            decoration: BoxDecoration(
+              color: accent.withValues(alpha: 0.14),
+              borderRadius: BorderRadius.circular(13),
+            ),
             child: Icon(icon, color: accent),
           ),
           const SizedBox(width: 12),
@@ -403,16 +515,26 @@ class _EquipmentStatus extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+                Text(title, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13)),
                 const SizedBox(height: 3),
-                Text(detail, style: TextStyle(color: colors.onSurfaceVariant, fontSize: 10)),
+                Text(
+                  detail,
+                  style: TextStyle(color: colors.onSurfaceVariant, fontSize: 10),
+                ),
               ],
             ),
           ),
-          Icon(Icons.lock_outline_rounded, color: colors.onSurfaceVariant, size: 18),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: colors.surfaceContainerHigh,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(Icons.lock_outline_rounded, color: colors.onSurfaceVariant, size: 17),
+          ),
         ],
       ),
-    ));
+    );
   }
 }
 
