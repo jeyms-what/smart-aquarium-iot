@@ -9,7 +9,23 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Remote API not configured'), findsOneWidget);
-    expect(find.text('No reading °C'), findsOneWidget);
+    expect(find.text('Water temperature'), findsOneWidget);
+    expect(find.text('—'), findsWidgets);
+
+    // Check that the dashboard exposes all five planned sensor channels.
+    for (final sensorLabel in [
+      'TDS',
+      'Turbidity',
+      'Water level',
+      'pH',
+    ]) {
+      await tester.scrollUntilVisible(
+        find.text(sensorLabel),
+        180,
+        maxScrolls: 10,
+      );
+      expect(find.text(sensorLabel), findsOneWidget);
+    }
 
     // The dashboard is a lazy sliver list, so scroll to build the recommendation
     // panel before asserting the care entry point.
