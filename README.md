@@ -268,12 +268,12 @@ The app can be opened without a configured backend. In that state it should show
 The AquaCare mobile app uses an **Aqua Life** visual identity inspired by underwater environments. AquaCare remains the official project and application name; Aqua Life refers only to the visual theme:
 
 - Deep-ocean navy, reef-blue, aqua, turquoise, and seafoam colors in the light and dark themes.
-- Frosted-glass surfaces built with Flutter `BackdropFilter`, translucent gradients, subtle aqua borders, and soft shadows.
-- A reusable `GlassPanel` / `GlassCard` component in `mobile/lib/widgets/glass_panel.dart`.
-- A layered ocean-gradient app background and translucent bottom navigation.
-- Consistent glass styling across Dashboard, Control, Care, History, and Settings.
+- A restrained ocean palette with clear typography, solid card surfaces, subtle borders, and consistent spacing.
+- A reusable `GlassPanel` / `GlassCard` surface in `mobile/lib/widgets/glass_panel.dart`, without a blur filter on every card.
+- A compact Material 3 bottom navigation with clear selected states and light/dark themes.
+- A responsive dashboard showing five sensor channels: TDS, turbidity, water level, pH, and water temperature.
 
-The Care tab provides offline Betta, Neon Tetra, Goldfish, and Guppy starter guidance. It compares valid and sufficiently fresh temperature and pH telemetry only; missing or unverified readings are not presented as safe. See [docs/fish-care-guidance.md](docs/fish-care-guidance.md) for source ranges and limitations. The design layer does not change telemetry or actuator safety semantics. Unavailable measurements remain unavailable; cached and stale readings retain their status; pump and feeder commands continue to require the existing development configuration and device-side acknowledgment/physical-state verification. Automated Flutter analysis and all 9 widget tests passed in [GitHub Actions run #35](https://github.com/jeyms-what/smart-aquarium-iot/actions/runs/43346468183). A visual check on a physical Android device is still recommended.
+The Care tab provides offline Betta, Neon Tetra, Goldfish, and Guppy starter guidance. It compares valid and sufficiently fresh temperature and pH telemetry only; missing or unverified readings are not presented as safe. The other dashboard channels (TDS, turbidity, and water level) are displayed as measurements only and are not treated as substitutes for aquarium test kits. See [docs/fish-care-guidance.md](docs/fish-care-guidance.md) for source ranges and limitations. The design layer does not change telemetry or actuator safety semantics. Unavailable measurements remain unavailable; cached and stale readings retain their status; pump and feeder commands continue to require the existing development configuration and device-side acknowledgment/physical-state verification. Automated Flutter analysis and all 9 widget tests passed in [GitHub Actions run #35](https://github.com/jeyms-what/smart-aquarium-iot/actions/runs/43346468183). A visual check on a physical Android device is still recommended.
 
 ## Run the local backend and infrastructure
 
