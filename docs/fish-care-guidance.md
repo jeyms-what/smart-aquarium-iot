@@ -4,9 +4,14 @@
 
 The Flutter Care screen provides offline starter profiles for Betta, Neon Tetra, Goldfish, and Guppy. A user must select a species; the app does not assume which fish the aquarium contains. The selected species ID is stored locally in a separate SQLite database.
 
-The app currently compares only:
-- Water temperature telemetry using sensor code `water_temperature` and supported Celsius/Fahrenheit units.
-- pH telemetry using sensor code `ph` or `water_ph`.
+The planned AquaCare sensor set is:
+- TDS using sensor code `tds` (or `total_dissolved_solids`), reported in ppm only after calibration.
+- Turbidity using sensor code `turbidity`; raw ADC must not be labelled as NTU without a calibration method.
+- Water level using sensor code `water_level`.
+- pH using sensor code `ph` or `water_ph`.
+- Water temperature using sensor code `water_temperature` and supported Celsius/Fahrenheit units.
+
+Species-specific range assessments currently use only water temperature and pH. TDS, turbidity, and water level are shown as measurements and are not used to infer ammonia, nitrite, nitrate, GH/KH, or overall water safety.
 
 The assessment is intentionally conservative:
 - Missing, invalid, stale, unsupported-unit, or unverified-time readings are not reported as within range.
