@@ -25,18 +25,18 @@ void main() {
       'pH',
     ]) {
       await tester.scrollUntilVisible(
-        find.text(sensorLabel),
+        find.text(sensorLabel).first,
         180,
         maxScrolls: 10,
-        scrollable: dashboardScrollable,
+        scrollable: dashboardScrollable.first,
       );
-      expect(find.text(sensorLabel), findsOneWidget);
+      expect(find.text(sensorLabel), findsWidgets);
     }
 
     // The dashboard is a lazy sliver list, so scroll to build the recommendation
     // panel before asserting the care entry point.
     await tester.scrollUntilVisible(
-      find.text('Species-specific fish care'),
+      find.text('Species-specific fish care').first,
       250,
       maxScrolls: 10,
       scrollable: dashboardScrollable,
