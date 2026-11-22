@@ -29,25 +29,29 @@ class TelemetryReading {
         'water_temperature' => 'Water temperature',
         'water_level' => 'Water level',
         'turbidity' => 'Turbidity',
+        'tds' || 'total_dissolved_solids' => 'TDS',
         'ph' || 'water_ph' => 'pH',
         _ => sensorCode.replaceAll('_', ' '),
       };
 
-  String get displayUnit => switch (unit) {
-        'degC' => '°C',
-        'degF' => '°F',
+  String get displayUnit => switch (unit.trim().toLowerCase()) {
+        'degc' => '°C',
+        'degf' => '°F',
         'cm' => 'cm',
         'mm' => 'mm',
         'ntu' => 'NTU',
         'raw_adc' => 'raw ADC',
+        'ppm' => 'ppm',
+        'mg/l' => 'mg/L',
+        'us/cm' || 'µs/cm' => 'µS/cm',
         _ => unit,
       };
 
   String get formattedValue {
     if (!hasUsableValue) return '—';
     final digits = switch (sensorCode) {
-      'water_temperature' => 1,
-      'water_level' => 1,
+      'water_temperature' || 'water_level' => 1,
+      'tds' || 'total_dissolved_solids' => 0,
       _ => 2,
     };
     return value!.toStringAsFixed(digits);

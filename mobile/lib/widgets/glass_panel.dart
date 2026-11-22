@@ -1,8 +1,10 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
-/// Reusable frosted-glass surface for the Aqua Life visual system.
+/// Reusable, low-distraction card surface for AquaCare.
+///
+/// This intentionally uses a solid Material surface rather than a blur on
+/// every card. It keeps sensor dashboards readable and reduces repeated
+/// BackdropFilter work on mobile devices.
 class GlassPanel extends StatelessWidget {
   const GlassPanel({
     required this.child,
@@ -17,51 +19,39 @@ class GlassPanel extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final double radius;
   final Color? tint;
+
+  /// Retained for source compatibility with earlier Aqua Life widgets.
+  /// Flat surfaces no longer use a backdrop blur.
   final double blur;
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final base = tint ?? (isDark ? const Color(0xFF0D5960) : const Color(0xFFE5FAF7));
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(radius),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-        child: Container(
-          padding: padding,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                base.withValues(alpha: isDark ? 0.34 : 0.62),
-                (isDark ? const Color(0xFF102D3A) : Colors.white)
-                    .withValues(alpha: isDark ? 0.48 : 0.72),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(radius),
-            border: Border.all(
-              color: (isDark ? const Color(0xFF9AF5E8) : const Color(0xFF4CBFB5))
-                  .withValues(alpha: isDark ? 0.22 : 0.28),
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF21D4C2).withValues(alpha: isDark ? 0.08 : 0.06),
-                blurRadius: 24,
-                offset: const Offset(0, 10),
-              ),
-            ],
-          ),
-          child: child,
+    return Container(
+      padding: padding,
+      decoration: BoxDecoration(
+        color: tint ?? colors.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(radius),
+        border: Border.all(
+          color: colors.outlineVariant.withValues(alpha: isDark ? 0.72 : 0.9),
         ),
+        boxShadow: isDark
+            ? const []
+            : [
+                BoxShadow(
+                  color: const Color(0xFF164D4B).withValues(alpha: 0.045),
+                  blurRadius: 16,
+                  offset: const Offset(0, 5),
+                ),
+              ],
       ),
+      child: child,
     );
   }
 }
 
-
-/// A Material Card wrapped in a frosted surface, for content-rich glass panels.
+/// A Material Card wrapped in the shared AquaCare surface treatment.
 class GlassCard extends StatelessWidget {
   const GlassCard({
     required this.child,
@@ -76,13 +66,8 @@ class GlassCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GlassPanel(
       padding: EdgeInsets.zero,
-      child: Card(
-        margin: EdgeInsets.zero,
-        elevation: 0,
-        surfaceTintColor: Colors.transparent,
-        color: (color ?? Colors.transparent).withValues(alpha: color == null ? 0.0 : 0.26),
-        child: child,
-      ),
+      tint: color,
+      child: child,
     );
   }
 }

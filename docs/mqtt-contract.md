@@ -29,14 +29,16 @@ Use QoS 1 for alert/command/ack messages. Telemetry QoS may be selected based on
   "measured_at": "2026-11-09T01:00:00.000Z",
   "time_quality": "rtc_synced",
   "readings": {
-    "water_temperature": { "value": 25.4, "unit": "degC", "valid": true },
+    "tds": { "value": 185.0, "unit": "ppm", "valid": true },
+    "turbidity": { "value": 0.0, "unit": "raw_adc", "valid": false },
     "water_level": { "value": 12.1, "unit": "cm", "valid": true },
-    "turbidity": { "value": 0.0, "unit": "raw_adc", "valid": false }
+    "ph": { "value": 7.2, "unit": "pH", "valid": true },
+    "water_temperature": { "value": 25.4, "unit": "degC", "valid": true }
   }
 }
 ```
 
-The values above are **illustrative contract examples only**, not prototype measurements. A device must transmit only actual readings. If a sensor is unavailable or invalid, send `value: null` and `valid: false`. Do not interpret raw ADC as calibrated NTU.
+The values above are **illustrative contract examples only**, not prototype measurements. A device must transmit only actual readings. If a sensor is unavailable or invalid, send `value: null` and `valid: false`. Do not interpret raw ADC as calibrated NTU. The generic TDS module must be calibrated before its converted output is represented as ppm; the pH probe also requires buffer calibration.
 
 ## Command payload
 

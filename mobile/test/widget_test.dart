@@ -8,8 +8,30 @@ void main() {
     await tester.pumpWidget(const SmartAquariumApp());
     await tester.pumpAndSettle();
 
+    final dashboardScrollable = find.descendant(
+      of: find.byKey(const ValueKey('dashboard-scroll-view')),
+      matching: find.byType(Scrollable),
+    );
+
     expect(find.text('Remote API not configured'), findsOneWidget);
-    expect(find.text('No reading °C'), findsOneWidget);
+    expect(find.text('Water temperature'), findsOneWidget);
+    expect(find.text('—'), findsWidgets);
+
+    // Check that the dashboard exposes all five planned sensor channels.
+    for (final sensorLabel in [
+      'TDS',
+      'Turbidity',
+      'Water level',
+      'pH',
+    ]) {
+      await tester.scrollUntilVisible(
+        find.text(sensorLabel).first,
+        180,
+        maxScrolls: 10,
+        scrollable: dashboardScrollable.first,
+      );
+      expect(find.text(sensorLabel), findsWidgets);
+    }
 
     // The dashboard is a lazy sliver list, so scroll to build the recommendation
     // panel before asserting the care entry point.
@@ -17,6 +39,7 @@ void main() {
       find.text('Species-specific fish care'),
       250,
       maxScrolls: 10,
+      scrollable: dashboardScrollable,
     );
     expect(find.text('Species-specific fish care'), findsOneWidget);
   });

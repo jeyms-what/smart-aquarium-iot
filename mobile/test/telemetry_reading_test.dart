@@ -47,6 +47,50 @@ void main() {
       expect(reading.formattedValue, '—');
     });
 
+    test('formats TDS telemetry with its reported ppm unit', () {
+      final reading = TelemetryReading.fromApiJson(
+        {
+          'event_id': '33333333-3333-4333-8333-333333333333',
+          'device_id': 'aquarium_001',
+          'sensor_code': 'tds',
+          'measurement_value': 185.0,
+          'measurement_unit': 'ppm',
+          'is_valid': true,
+          'measured_at': '2026-11-09T01:00:00.000Z',
+          'received_at': '2026-11-09T01:00:02.000Z',
+          'time_quality': 'ntp_synced',
+          'sequence_number': 14,
+        },
+        fallbackDeviceId: 'aquarium_001',
+      );
+
+      expect(reading.displayName, 'TDS');
+      expect(reading.displayUnit, 'ppm');
+      expect(reading.formattedValue, '185');
+    });
+
+    test('labels pH channel aliases consistently', () {
+      final reading = TelemetryReading.fromApiJson(
+        {
+          'event_id': '44444444-4444-4444-8444-444444444444',
+          'device_id': 'aquarium_001',
+          'sensor_code': 'water_ph',
+          'measurement_value': 7.25,
+          'measurement_unit': 'pH',
+          'is_valid': true,
+          'measured_at': '2026-11-09T01:00:00.000Z',
+          'received_at': '2026-11-09T01:00:02.000Z',
+          'time_quality': 'ntp_synced',
+          'sequence_number': 15,
+        },
+        fallbackDeviceId: 'aquarium_001',
+      );
+
+      expect(reading.displayName, 'pH');
+      expect(reading.displayUnit, 'pH');
+      expect(reading.formattedValue, '7.25');
+    });
+
     test('rejects records missing identity or timing fields', () {
       expect(
         () => TelemetryReading.fromApiJson(
