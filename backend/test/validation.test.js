@@ -16,6 +16,21 @@ test('accepts a schema-valid telemetry event', () => {
   assert.equal(telemetrySchema.safeParse(validTelemetry).success, true);
 });
 
+test('accepts the five planned AquaCare sensor channels', () => {
+  const payload = {
+    ...validTelemetry,
+    readings: {
+      tds: { value: 185, unit: 'ppm', valid: true },
+      turbidity: { value: null, unit: 'raw_adc', valid: false },
+      water_level: { value: 12.1, unit: 'cm', valid: true },
+      ph: { value: 7.2, unit: 'pH', valid: true },
+      water_temperature: { value: 25.4, unit: 'degC', valid: true },
+    },
+  };
+
+  assert.equal(telemetrySchema.safeParse(payload).success, true);
+});
+
 test('rejects a telemetry event without sensor readings', () => {
   const payload = { ...validTelemetry, readings: {} };
   assert.equal(telemetrySchema.safeParse(payload).success, false);
