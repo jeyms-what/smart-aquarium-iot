@@ -36,7 +36,7 @@ void main() {
     // The dashboard is a lazy sliver list, so scroll to build the recommendation
     // panel before asserting the care entry point.
     await tester.scrollUntilVisible(
-      find.text('Species-specific fish care').first,
+      find.text('Species-specific fish care'),
       250,
       maxScrolls: 10,
       scrollable: dashboardScrollable,
